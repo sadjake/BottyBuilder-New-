@@ -1,3 +1,3 @@
 #put your token from your discord bot here!
-token = 'test'
+token = 'testing'
 
