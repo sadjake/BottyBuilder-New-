@@ -12,5 +12,5 @@ Thumbs.db
 __pycache__/
 
 # Environments
-SECRET.py #to hide the discord token
+#to hide the discord token
 SECRET.py
