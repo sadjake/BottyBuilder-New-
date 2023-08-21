@@ -241,7 +241,7 @@ async def bmr_info(ctx):
     # value for cut
 #    cut = dcml*0.85
 
-# make a function instead?!??!??!?!?!?!?! RAHHHHH
+# make a function instead?!??!??!?!?!?!?!  wuzzup
 def calculate_bmr(gender, age, height, weight):
     # will get gender another way instead of doing this
     if gender == "male":
