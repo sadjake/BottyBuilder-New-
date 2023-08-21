@@ -272,6 +272,6 @@ async def bmr_info(ctx):
 
     # present value of dcml/bulk/cut to the user when they use the command 
     # (go back to the button part of the code)
-
+ 
 # List of muscle groups to train command + buttons
 bot.run(token)
