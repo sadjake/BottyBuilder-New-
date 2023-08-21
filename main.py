@@ -227,7 +227,17 @@ async def bmr_info(ctx):
     # daily calorie maintenance level
     # round to 2 decimal places
     dcml = bmpValue*activity
-    
+
+    # value for bulk
+    bulk = dcml*1.15
+
+    # value for cut
+    cut = dcml*0.85
+
+    # present value of dcml/bulk/cut to the user when they use the command 
+    # (go back to the button part of the code)
+
+  
 # List of muscle groups to train command + buttons
 
 
