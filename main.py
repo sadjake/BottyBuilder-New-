@@ -196,6 +196,12 @@ async def bmr_info(ctx):
 
 # Cut:
 # float cut = dcml*0.85
+
+# open file
+    file = open("info.csv")
+    file.readline()
+    for line in file:
+        userdata = line.split(",")
     
 # List of muscle groups to train command + buttons
 
