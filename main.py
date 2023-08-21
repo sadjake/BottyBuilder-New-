@@ -345,6 +345,27 @@ def calculate_bmr(gender, age, height, weight):
     elif gender == "female":
         bmpValue = 655.1 + (9.563 * weight) + (1.850 * height) - (4.676 * age)
 
+@bot.slash_command(name="bmr", description="BMR, Daily Calorie Needs, Bulk (Calories), Cut (Calories)")
+async def bmr_info(ctx):
+    view = bmr()
+    await ctx.send("What would you like to calculate?", view=view)
+    await view.wait()
+
+    if view.value == "BMR":
+        # Get user data from CSV file
+        file = open("info.csv")
+        file.readline()  # Skip header
+        userdata = file.readline().strip().split(",")
+        file.close()
+
+        name, gender, age, height, weight, activity = userdata
+
+        # Calculate BMR based on gender, age, height, and weight
+        bmr_value = calculate_bmr(gender, float(age), float(height), float(weight))
+
+        await ctx.send(f"Your BMR: {bmr_value}")
+        # Calculate and send other values (daily calorie needs, bulk, cut) if needed
+
     
 
     # present value of dcml/bulk/cut to the user when they use the command 
@@ -352,4 +373,3 @@ def calculate_bmr(gender, age, height, weight):
 
 # List of muscle groups to train command + buttons
 bot.run(token)
-
