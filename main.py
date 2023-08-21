@@ -1,5 +1,5 @@
 from SECRET import token
-import nextcord, time
+import nextcord, time, datetime, asyncio
 from nextcord import Interaction
 from nextcord.ext import commands
 
@@ -13,12 +13,16 @@ from nextcord.ext import commands
 #intents = nextcord.Intents.default()
 #intents.members = True
 
+#lets bot run offline from replit for an hour
+from stay_alive import stay_alive # or whatever you named your file and function
+stay_alive() # call the function
+
 # creates an instance of commands.Bot class
 bot = commands.Bot()
 
 @bot.event
 async def on_ready():
-    print(f"The bot, {bot.user}, is ready!")
+    print(f"Logged in as {bot.user}!")
 
 # list of commands
 # commands - a list of commands to use
@@ -36,6 +40,11 @@ class yourinfo(nextcord.ui.View):
     @nextcord.ui.button(label = "Name", style = nextcord.ButtonStyle.primary)
     async def name(self, button: nextcord.ui.Button, interaction: Interaction):
         self.value  = 'name'
+        self.stop()
+        
+    @nextcord.ui.button(label = "Gender", style = nextcord.ButtonStyle.primary)
+    async def gender(self, button: nextcord.ui.Button, interaction: Interaction):
+        self.value  = 'gender'
         self.stop()
 
     @nextcord.ui.button(label = "Age", style=nextcord.ButtonStyle.primary)
@@ -59,7 +68,7 @@ class yourinfo(nextcord.ui.View):
         self.value = 'activity'
         self.stop()
 
-class update(nextcord.ui.View):
+class update(nextcord.ui.View, message, column):
     def  __init__(self):
         super().__init__()
         self.value = None
@@ -80,15 +89,25 @@ async def update_info(ctx):
     await view.wait()
     
     if view.value == 'name':
-        view = update(answer, 0)
         await ctx.send("Please enter your name")
+        try:
+            reply = await bot.wait_for("message", timeout=60, check=lambda message: message.author == ctx.author)
+            view = update(0)
+        except asyncio.TimeoutError:
+            await ctx.send("Timeout!")
+            return
         await view.wait()
 
         if view.value == 'changed':
-            await ctx.send("Your name has been changed to stupid")
+            await ctx.send(f"Your name has been changed to stupid {view.answer}")
 
-        else:   # failsafe
-            await ctx.send("Your name has not been changed")
+    elif view.value == 'gender':
+        view = update()
+        await ctx.send("Please enter your gender")
+        await view.wait()
+
+        if view.value == 'changed':
+            await ctx.send("Your age has been changed to male")
             
     elif view.value == 'age':
         view = update()
@@ -97,9 +116,6 @@ async def update_info(ctx):
 
         if view.value == 'changed':
             await ctx.send("Your age has been changed to 69")
-        
-        else:   # failsafe
-            await ctx.send("Your age has not been changed")
     
     elif view.value == 'height':
         view = update()
@@ -108,9 +124,6 @@ async def update_info(ctx):
 
         if view.value == 'changed':
             await ctx.send("Your height has been changed to 420")
-        
-        else:   # failsafe
-            await ctx.send("Your height has not been changed")
     
     elif view.value == 'weight':
         view = update()
@@ -119,9 +132,6 @@ async def update_info(ctx):
 
         if view.value == 'changed':
             await ctx.send("Your weight has been changed to 666")
-
-        else:   # failsafe
-            await ctx.send("Your weight has not been changed")
     
     elif view.value == 'activity':
         view = update()
@@ -130,9 +140,6 @@ async def update_info(ctx):
 
         if view.value == 'changed':
             await ctx.send("Your activity level has been changed to 420")
-        
-        else:   # failsafe
-            await ctx.send("Your activity level has not been changed")
 
 # die
 @bot.slash_command(name = "die", description="death")
@@ -238,8 +245,62 @@ async def bmr_info(ctx):
     # (go back to the button part of the code)
 
   
+# bmpValue = 655.1 + (9.563*weight) + (1.850*height) - (4.676*age)
+# present value of bmp to the user when they use the command
+# round to 2 decimal places
+
+# Daily caloric maintenance level:
+# dcml = bmpValue*activity
+# round to 2 decimal places
+# present value of dcml to the user when they use the command
+
+# Bulk:
+# bulk = dcml*1.15
+
+# Cut:
+# cut = dcml*0.85
+
+# open file
+    file = open("info.csv")
+    file.readline()
+    # for loop not needed below
+    #for line in file:
+    userdata = line.strip().split(",")
+
+    age = float(userdata[1])
+    height = float(userdata[2])
+    weight = float(userdata[3])
+    activity = float(userdata[4])
+
+    if () #if statement for checking user's gender (male/female), just need to add extra column in file
+        # can make the if statement using the csv file as an array
+        # this one is for when the user is male
+        # round to 2 decimal places
+        bmpValue = 66.5 + (13.75*weight) + (5.003*height) - (6.75*age)
+    
+    if () #if statement for checking user's gender (male/female), just need to add extra column in file
+        # can make the if statement using the csv file as an array
+        # this one is for when the user is male
+        # round to 2 decimal places
+        bmpValue = 655.1 + (9.563*weight) + (1.850*height) - (4.676*age)
+
+    # present value of bmp to the user when they use the command 
+    # (go back to the button part of the code)
+
+    # daily calorie maintenance level
+    # round to 2 decimal places
+    dcml = bmpValue*activity
+
+    # value for bulk
+    bulk = dcml*1.15
+
+    # value for cut
+    cut = dcml*0.85
+
+    # present value of dcml/bulk/cut to the user when they use the command 
+    # (go back to the button part of the code)
+
+
 # List of muscle groups to train command + buttons
-
-
-   
 bot.run(token)
+
