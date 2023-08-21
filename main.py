@@ -178,5 +178,5 @@ async def bmr_info(ctx):
     await view.wait()
     
 # List of muscle groups to train command + buttons
-
+   
 bot.run(token)
