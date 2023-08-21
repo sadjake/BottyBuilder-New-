@@ -22,6 +22,7 @@ Run the main.py file and it should be good to go :thumbsup:
 
 Calculates your BMR using Harris Benedict Equation
 When calculating maintenance calorie level, the following is needed to calculate it using the Harris Benedict Equation:
+
 (NOTE: DISCORD BOT WILL SAVE THIS INFO TO CSV FILE TO KEEP TRACK OF USER’S INFO)
 Name/discord user
 AGE
