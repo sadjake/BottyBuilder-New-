@@ -176,7 +176,12 @@ async def bmr_info(ctx):
     view = bmr()
     await ctx.send("What would you like to calculate?", view=view)
     await view.wait()
+
+# Use Harris Benedict equation for BMR
+# 
     
 # List of muscle groups to train command + buttons
+
+
    
 bot.run(token)
