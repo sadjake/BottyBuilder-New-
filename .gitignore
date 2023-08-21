@@ -13,3 +13,4 @@ __pycache__/
 
 # Environments
 SECRET.py #to hide the discord token
+SECRET.py

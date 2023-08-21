@@ -260,24 +260,6 @@ async def bmr_info(ctx):
 # Cut:
 # cut = dcml*0.85
 
-# open file
-    file = open("info.csv")
-    file.readline()
-    # for loop not needed below
-    #for line in file:
-    userdata = line.strip().split(",")
-
-    age = float(userdata[1])
-    height = float(userdata[2])
-    weight = float(userdata[3])
-    activity = float(userdata[4])
-
-    if () #if statement for checking user's gender (male/female), just need to add extra column in file
-        # can make the if statement using the csv file as an array
-        # this one is for when the user is male
-        # round to 2 decimal places
-        bmpValue = 66.5 + (13.75*weight) + (5.003*height) - (6.75*age)
-    
 
 
 # Use Harris Benedict equation for BMR
