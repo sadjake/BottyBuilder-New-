@@ -176,9 +176,26 @@ async def bmr_info(ctx):
     view = bmr()
     await ctx.send("What would you like to calculate?", view=view)
     await view.wait()
-
+    
 # Use Harris Benedict equation for BMR
-# 
+# determine gender of user first
+# for male:
+# float bmpValue = 66.5 + (13.75*weight) + (5.003*height) - (6.75*age)
+# for female:
+# float bmpValue = 655.1 + (9.563*weight) + (1.850*height) - (4.676*age)
+# present value of bmp to the user when they use the command
+# round to 2 decimal places
+
+# Daily caloric maintenance level:
+# float dcml = bmpValue*activity
+# round to 2 decimal places
+# present value of dcml to the user when they use the command
+
+# Bulk:
+# float bulk = dcml*1.15
+
+# Cut:
+# float cut = dcml*0.85
     
 # List of muscle groups to train command + buttons
 
