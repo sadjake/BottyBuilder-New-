@@ -1,7 +1,7 @@
 # Editors
-.vscode/
+.vscode/ 
 
-# Mac/OSX
+# Mac/OSX 
 .DS_Store
 
 # Windows
@@ -12,4 +12,4 @@ Thumbs.db
 __pycache__/
 
 # Environments
-SECRET.py
+SECRET.py #to hide the discord token
