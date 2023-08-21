@@ -59,7 +59,7 @@ class yourinfo(nextcord.ui.View):
         self.value = 'activity'
         self.stop()
 
-class update_name(nextcord.ui.View):
+class update(nextcord.ui.View):
     def  __init__(self):
         super().__init__()
         self.value = None
@@ -80,7 +80,7 @@ async def update_info(ctx):
     await view.wait()
     
     if view.value == 'name':
-        view = update_name()
+        view = update(answer, 0)
         await ctx.send("Please enter your name")
         await view.wait()
 
@@ -90,49 +90,49 @@ async def update_info(ctx):
         else:   # failsafe
             await ctx.send("Your name has not been changed")
             
-    # elif view.value == 'age':
-    #     view = update_age()
-    #     await ctx.send("Please enter your age")
-    #     await view.wait()
+    elif view.value == 'age':
+        view = update()
+        await ctx.send("Please enter your age")
+        await view.wait()
 
-    #     if view.value == 'changed':
-    #         await ctx.send("Your age has been changed to 69")
+        if view.value == 'changed':
+            await ctx.send("Your age has been changed to 69")
         
-    #     else:   # failsafe
-    #         await ctx.send("Your age has not been changed")
+        else:   # failsafe
+            await ctx.send("Your age has not been changed")
     
-    # elif view.value == 'height':
-    #     view = update_height()
-    #     await ctx.send("Please enter your height")
-    #     await view.wait()
+    elif view.value == 'height':
+        view = update()
+        await ctx.send("Please enter your height")
+        await view.wait()
 
-    #     if view.value == 'changed':
-    #         await ctx.send("Your height has been changed to 420")
+        if view.value == 'changed':
+            await ctx.send("Your height has been changed to 420")
         
-    #     else:   # failsafe
-    #         await ctx.send("Your height has not been changed")
+        else:   # failsafe
+            await ctx.send("Your height has not been changed")
     
-    # elif view.value == 'weight':
-    #     view = update_weight()
-    #     await ctx.send("Please enter your weight")
-    #     await view.wait()
+    elif view.value == 'weight':
+        view = update()
+        await ctx.send("Please enter your weight")
+        await view.wait()
 
-    #     if view.value == 'changed':
-    #         await ctx.send("Your weight has been changed to 666")
+        if view.value == 'changed':
+            await ctx.send("Your weight has been changed to 666")
 
-    #     else:   # failsafe
-    #         await ctx.send("Your weight has not been changed")
+        else:   # failsafe
+            await ctx.send("Your weight has not been changed")
     
-    # elif view.value == 'activity':
-    #     view = update_activity()
-    #     await ctx.send("Please enter your activity level")
-    #     await view.wait()
+    elif view.value == 'activity':
+        view = update()
+        await ctx.send("Please enter your activity level")
+        await view.wait()
 
-    #     if view.value == 'changed':
-    #         await ctx.send("Your activity level has been changed to 420")
+        if view.value == 'changed':
+            await ctx.send("Your activity level has been changed to 420")
         
-    #     else:   # failsafe
-    #         await ctx.send("Your activity level has not been changed")
+        else:   # failsafe
+            await ctx.send("Your activity level has not been changed")
 
 # die
 @bot.slash_command(name = "die", description="death")
