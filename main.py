@@ -183,6 +183,7 @@ async def bmr_info(ctx):
     view = bmr()
     await ctx.send("What would you like to calculate?", view=view)
     await view.wait()
+<<<<<<< Updated upstream
     
 # Use Harris Benedict equation for BMR
 # determine gender of user first
@@ -278,6 +279,47 @@ async def bmr_info(ctx):
         # round to 2 decimal places
         bmpValue = 66.5 + (13.75*weight) + (5.003*height) - (6.75*age)
     
+=======
+
+# Use Harris Benedict equation for BMR
+# determine gender of user first
+# for male:
+# bmpValue = 66.5 + (13.75*weight) + (5.003*height) - (6.75*age)
+# for female:
+# bmpValue = 655.1 + (9.563*weight) + (1.850*height) - (4.676*age)
+# present value of bmp to the user when they use the command
+# round to 2 decimal places
+
+# Daily caloric maintenance level:
+# dcml = bmpValue*activity
+# round to 2 decimal places
+# present value of dcml to the user when they use the command
+
+# Bulk:
+# bulk = dcml*1.15
+
+# Cut:
+# cut = dcml*0.85
+
+# open file
+    file = open("info.csv")
+    file.readline()
+    # for loop not needed below
+    #for line in file:
+    userdata = line.strip().split(",")
+
+    age = float(userdata[1])
+    height = float(userdata[2])
+    weight = float(userdata[3])
+    activity = float(userdata[4])
+
+    if () #if statement for checking user's gender (male/female), just need to add extra column in file
+        # can make the if statement using the csv file as an array
+        # this one is for when the user is male
+        # round to 2 decimal places
+        bmpValue = 66.5 + (13.75*weight) + (5.003*height) - (6.75*age)
+    
+>>>>>>> Stashed changes
     if () #if statement for checking user's gender (male/female), just need to add extra column in file
         # can make the if statement using the csv file as an array
         # this one is for when the user is male
@@ -302,5 +344,9 @@ async def bmr_info(ctx):
 
 
 # List of muscle groups to train command + buttons
+<<<<<<< Updated upstream
 bot.run(token)
 
+=======
+bot.run(token)
+>>>>>>> Stashed changes
