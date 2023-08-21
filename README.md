@@ -9,7 +9,7 @@ Get your discord bot token and put it inside a SECRET.py file
 
 If you haven't installed the dependencies yet, do so with the following commands (for python 3.0 versions)
 ```
-pip install nextcord
+python3 -m pip install -U nextcord
 pip3 install requests
 ```
 If you already have discord.py installed, it might clash with nextcord and not work so use ```pip uninstall``` discord.py to uninstall it.
