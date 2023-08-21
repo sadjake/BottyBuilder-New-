@@ -183,7 +183,6 @@ async def bmr_info(ctx):
     view = bmr()
     await ctx.send("What would you like to calculate?", view=view)
     await view.wait()
-<<<<<<< Updated upstream
     
 # Use Harris Benedict equation for BMR
 # determine gender of user first
@@ -279,7 +278,7 @@ async def bmr_info(ctx):
         # round to 2 decimal places
         bmpValue = 66.5 + (13.75*weight) + (5.003*height) - (6.75*age)
     
-=======
+
 
 # Use Harris Benedict equation for BMR
 # determine gender of user first
@@ -302,51 +301,55 @@ async def bmr_info(ctx):
 # cut = dcml*0.85
 
 # open file
-    file = open("info.csv")
-    file.readline()
+#    file = open("info.csv")
+#    file.readline()
     # for loop not needed below
     #for line in file:
-    userdata = line.strip().split(",")
+#    userdata = line.strip().split(",")
 
-    age = float(userdata[1])
-    height = float(userdata[2])
-    weight = float(userdata[3])
-    activity = float(userdata[4])
+#    age = float(userdata[1])
+ #   height = float(userdata[2])
+#    weight = float(userdata[3])
+#    activity = float(userdata[4])
 
-    if () #if statement for checking user's gender (male/female), just need to add extra column in file
+ #   if () #if statement for checking user's gender (male/female), just need to add extra column in file
         # can make the if statement using the csv file as an array
         # this one is for when the user is male
         # round to 2 decimal places
-        bmpValue = 66.5 + (13.75*weight) + (5.003*height) - (6.75*age)
+#        bmpValue = 66.5 + (13.75*weight) + (5.003*height) - (6.75*age)
     
->>>>>>> Stashed changes
-    if () #if statement for checking user's gender (male/female), just need to add extra column in file
+#    if () #if statement for checking user's gender (male/female), just need to add extra column in file
         # can make the if statement using the csv file as an array
         # this one is for when the user is male
         # round to 2 decimal places
-        bmpValue = 655.1 + (9.563*weight) + (1.850*height) - (4.676*age)
+#        bmpValue = 655.1 + (9.563*weight) + (1.850*height) - (4.676*age)
 
     # present value of bmp to the user when they use the command 
     # (go back to the button part of the code)
 
     # daily calorie maintenance level
     # round to 2 decimal places
-    dcml = bmpValue*activity
+#    dcml = bmpValue*activity
 
     # value for bulk
-    bulk = dcml*1.15
+#    bulk = dcml*1.15
 
     # value for cut
-    cut = dcml*0.85
+#    cut = dcml*0.85
+
+# make a function instead?!??!??!?!?!?!?! RAHHHHH
+def calculate_bmr(gender, age, height, weight):
+    # will get gender another way instead of doing this
+    if gender == "male":
+        bmpValue = 66.5 + (13.75 * weight) + (5.003 * height) - (6.75 * age)
+    elif gender == "female":
+        bmpValue = 655.1 + (9.563 * weight) + (1.850 * height) - (4.676 * age)
+
+    
 
     # present value of dcml/bulk/cut to the user when they use the command 
     # (go back to the button part of the code)
 
-
 # List of muscle groups to train command + buttons
-<<<<<<< Updated upstream
 bot.run(token)
 
-=======
-bot.run(token)
->>>>>>> Stashed changes
