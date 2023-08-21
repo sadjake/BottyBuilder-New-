@@ -1,6 +1,6 @@
 # BottyBuilder 2.0
 
-Saves your name, age, height, weight, and maintenance calorie level into a csv file 
+Saves your name, age, height, weight, gender, and maintenance/daily calorie level into a csv file 
 
 Bot includes option to allow the user to update their information
 
@@ -28,6 +28,7 @@ Name/discord user
 AGE
 HEIGHT
 WEIGHT
+GENDER
 How active during the week
 
 BMR:
