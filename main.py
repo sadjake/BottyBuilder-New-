@@ -78,7 +78,7 @@ class activityLevelView(nextcord.ui.View):
     def __init__(self):
         super().__init__()
     
-
+    @nextcord.ui.button(label = "Little to no physical activity", style=nextcord.ButtonStyle.primary)
 
 
 
