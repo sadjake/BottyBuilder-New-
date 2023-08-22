@@ -22,6 +22,11 @@ If you already have discord.py installed, it might clash with nextcord and not w
 Run the main.py file and it should be good to go :thumbsup:
 
 ## Commands
+/commands - list of commands for the bot
+
+/bmr - calculates your BMR and includes options to calculate Daily Maintenance Calorie Level, Bulk, and Cut.
+
+/exercises - 
 
 Calculates your BMR using Harris Benedict Equation
 When calculating maintenance calorie level, the following is needed to calculate it using the Harris Benedict Equation:
