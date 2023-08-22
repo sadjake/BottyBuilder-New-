@@ -1,5 +1,5 @@
 from SECRET import token
-import nextcord, time, datetime, asyncio
+import nextcord, time, datetime, asyncio, csv, random
 from nextcord import Interaction
 from nextcord.ext import commands
 
@@ -14,8 +14,8 @@ from nextcord.ext import commands
 #intents.members = True
 
 #lets bot run offline from replit for an hour
-from stay_alive import stay_alive # or whatever you named your file and function
-stay_alive() # call the function
+# from stay_alive import stay_alive # or whatever you named your file and function
+# stay_alive() # call the function
 
 # creates an instance of commands.Bot class
 bot = commands.Bot()
@@ -68,7 +68,7 @@ class yourinfo(nextcord.ui.View):
         self.value = 'activity'
         self.stop()
 
-class update(nextcord.ui.View, message, column):
+class update(nextcord.ui.View):
     def  __init__(self):
         super().__init__()
         self.value = None
@@ -89,14 +89,16 @@ async def update_info(ctx):
     await view.wait()
     
     if view.value == 'name':
+        view = update()
         await ctx.send("Please enter your name")
-        try:
-            reply = await bot.wait_for("message", timeout=60, check=lambda message: message.author == ctx.author)
-            view = update(0)
-        except asyncio.TimeoutError:
-            await ctx.send("Timeout!")
-            return
         await view.wait()
+        # try:
+        #     reply = await bot.wait_for("message", timeout=60, check=lambda message: message.author == ctx.author)
+        #     view = update(0)
+        # except asyncio.TimeoutError:
+        #     await ctx.send("Timeout!")
+        #     return
+        # await view.wait()
 
         if view.value == 'changed':
             await ctx.send(f"Your name has been changed to stupid {view.answer}")
@@ -141,10 +143,19 @@ async def update_info(ctx):
         if view.value == 'changed':
             await ctx.send("Your activity level has been changed to 420")
 
-# die
-@bot.slash_command(name = "die", description="death")
-async def die(interaction: nextcord.Interaction):
-    await interaction.send("die")
+# motivation/encouragement
+@bot.slash_command(name="Quotes", description="Quotes for motivation and encouragement")
+async def motivation(interaction: nextcord.Interaction):
+    # Open the quotes CSV file and read the quotes
+    with open("quotes_filtered_2.csv", "r") as file:
+        quotes_reader = csv.reader(file)
+        quotes = [row[0] for row in quotes_reader]
+
+    # Randomly choose a quote from the list
+    selected_quote = random.choice(quotes)
+
+    # Present the quote to the user
+    await interaction.send(selected_quote)
 
 # List of commands for the discord bot
 @bot.slash_command(name = "commands", description="List of commands for the discord bot")
@@ -176,13 +187,6 @@ class bmr(nextcord.ui.View):
     async def cut(self, button: nextcord.ui.Button, interaction: Interaction):
         self.value = 'Cut (Calories)'
         self.stop()
-    
-# buttons for the bmr stuff
-@bot.slash_command(name = "bmr", description="BMR, Daily Calorie Needs, Bulk (Calories), Cut (Calories)")
-async def bmr_info(ctx):
-    view = bmr()
-    await ctx.send("What would you like to calculate?", view=view)
-    await view.wait()
     
 # Use Harris Benedict equation for BMR
 # determine gender of user first
@@ -243,12 +247,27 @@ async def bmr_info(ctx):
 
 # make a function instead?!??!??!?!?!?!?!  wuzzup
 def calculate_bmr(gender, age, height, weight):
+    #initilize variables
+    bmpValue = 0
+    dclm = 0
+    bulk = 0
+    cut = 0
+    
     # will get gender another way instead of doing this
     if gender == "male":
         bmpValue = 66.5 + (13.75 * weight) + (5.003 * height) - (6.75 * age)
+        dclm = bmpValue*activity
+        bulk = dclm*1.15
+        cut = dclm*0.85
     elif gender == "female":
         bmpValue = 655.1 + (9.563 * weight) + (1.850 * height) - (4.676 * age)
+        dclm = bmpValue*activity
+        bulk = dclm*1.15
+        cut = dclm*0.85
 
+    return bmpValue
+
+# buttons for the bmr stuff
 @bot.slash_command(name="bmr", description="BMR, Daily Calorie Needs, Bulk (Calories), Cut (Calories)")
 async def bmr_info(ctx):
     view = bmr()
@@ -257,21 +276,34 @@ async def bmr_info(ctx):
 
     if view.value == "BMR":
         # Get user data from CSV file
-        file = open("info.csv")
-        file.readline()  # Skip header
-        userdata = file.readline().strip().split(",")
-        file.close()
+        with open("info.csv", "r") as file:
+            userdata = csv.reader(file)
+            next(userdata)  # Skip header
 
-        name, gender, age, height, weight, activity = userdata
+            # {ctx.author.name}
+            # {ctx.author.id}
 
-        # Calculate BMR based on gender, age, height, and weight
-        bmr_value = calculate_bmr(gender, float(age), float(height), float(weight))
+            for row in userdata:
+                data = row[0].split(",")  # Split each row by comma
+                if data[0] == str(ctx.user.id):
+                    # Extract needed values from the row
+                    gender = str(row[2])
+                    age = float(row[3])
+                    height = float(row[4])
+                    weight = float(row[5])
 
-        await ctx.send(f"Your BMR: {bmr_value}")
-        # Calculate and send other values (daily calorie needs, bulk, cut) if needed
+                    # Calculate BMR based on gender, age, height, and weight
+                    bmr_value = calculate_bmr(gender, age, height, weight)
+                    await ctx.send(f"Your BMR: {bmr_value}")
+                    file.close()
+                    return
+                    # Calculate and send other values (daily calorie needs, bulk, cut) if needed
+            else:
+                await ctx.send("You have not set your information yet. Please use the /updateinfo command to set your information.")
+                file.close()
 
-    # present value of dcml/bulk/cut to the user when they use the command 
-    # (go back to the button part of the code)
+        # present value of dcml/bulk/cut to the user when they use the command 
+        # (go back to the button part of the code)
  
 # List of muscle groups to train command + buttons
 bot.run(token)

@@ -15,6 +15,7 @@ If you haven't installed the dependencies yet, do so with the following commands
 ```
 python3 -m pip install -U nextcord
 pip3 install requests
+pip install flask
 ```
 If you already have discord.py installed, it might clash with nextcord and not work so use ```pip uninstall``` discord.py to uninstall it.
 
