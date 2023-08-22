@@ -155,7 +155,7 @@ async def motivation(interaction: nextcord.Interaction):
     selected_quote = random.choice(quotes)
 
     # Present the quote to the user
-    await interaction.send(selected_quote)
+    await interaction.send(selected_quote) 
 
 # List of commands for the discord bot
 @bot.slash_command(name = "commands", description="List of commands for the discord bot")
