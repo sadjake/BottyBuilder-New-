@@ -67,6 +67,20 @@ class yourinfo(nextcord.ui.View):
     async def activity(self, button: nextcord.ui.Button, interaction: Interaction):
         self.value = 'activity'
         self.stop()
+        await self.ask_activity_level(interaction)
+    
+    async def ask_activity_level(self, interaction: Interaction):
+        activity_level_view = activityLevelView()
+        await interaction.send("How active are you?", view=activity_level_view)
+        await activity_level_view.wait()
+
+class activityLevelView(nextcord.ui.View):
+    def __init__(self):
+        super().__init__()
+    
+
+
+
 
 class update(nextcord.ui.View):
     def  __init__(self):
@@ -89,16 +103,13 @@ async def update_info(ctx):
     await view.wait()
     
     if view.value == 'name':
-        view = update()
         await ctx.send("Please enter your name")
-        await view.wait()
-        # try:
-        #     reply = await bot.wait_for("message", timeout=60, check=lambda message: message.author == ctx.author)
-        #     view = update(0)
-        # except asyncio.TimeoutError:
-        #     await ctx.send("Timeout!")
-        #     return
-        # await view.wait()
+        try:
+            reply = await bot.wait_for("message", timeout=60, check=lambda message: message.author == bot.user)
+            view = update(0)
+        except asyncio.TimeoutError:
+            await ctx.send("Timeout!")
+            return
 
         if view.value == 'changed':
             await ctx.send(f"Your name has been changed to stupid {view.answer}")
@@ -254,7 +265,7 @@ def calculate_bmr(gender, age, height, weight, activity):
     cut = 0
 
     # Convert gender to lowercase and remove whitespace
-    gender = gender.strip().lower()
+    #gender = gender.strip().lower()
     
     # will get gender another way instead of doing this
     if gender == "male":
@@ -281,15 +292,13 @@ async def bmr_info(ctx):
         # Get user data from CSV file
         with open("info.csv", "r") as file:
             userdata = csv.reader(file)
-            next(userdata)  # Skip header
-
-            # {ctx.author.name}
-            # {ctx.author.id}
+            next(userdata)  # Skip header row
 
             for row in userdata:
                 data = row[0].split(",")  # Split each row by comma
-                if data[0] == str(ctx.user.id):
+                if data[0] == str(ctx.user.id): # user ID is the many numbers
                     # Extract needed values from the row
+                    name = str(row[1])
                     gender = str(row[2])
                     age = float(row[3])
                     height = float(row[4])
@@ -298,12 +307,12 @@ async def bmr_info(ctx):
 
                     # Calculate BMR based on gender, age, height, and weight
                     bmr_value = calculate_bmr(gender, age, height, weight, activity)
-                    await ctx.send(f"Your BMR: {bmr_value}")
+                    await ctx.send(f"{name}, your BMR is {bmr_value}")
                     file.close()
                     return
                     # Calculate and send other values (daily calorie needs, bulk, cut) if needed
             else:
-                await ctx.send("You have not set your information yet. Please use the /updateinfo command to set your information.")
+                await ctx.send("You have not set your information yet. Please use the ```/updateinfo``` command to set your information.")
                 file.close()
 
         # present value of dcml/bulk/cut to the user when they use the command 
