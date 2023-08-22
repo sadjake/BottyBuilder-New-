@@ -144,7 +144,7 @@ async def update_info(ctx):
             await ctx.send("Your activity level has been changed to 420")
 
 # motivation/encouragement
-@bot.slash_command(name="Quotes", description="Quotes for motivation and encouragement")
+@bot.slash_command(name="quotes", description="Quotes for motivation and encouragement")
 async def motivation(interaction: nextcord.Interaction):
     # Open the quotes CSV file and read the quotes
     with open("quotes_filtered_2.csv", "r") as file:
@@ -246,12 +246,15 @@ class bmr(nextcord.ui.View):
 #    cut = dcml*0.85
 
 # make a function instead?!??!??!?!?!?!?!  wuzzup
-def calculate_bmr(gender, age, height, weight):
+def calculate_bmr(gender, age, height, weight, activity):
     #initilize variables
     bmpValue = 0
     dclm = 0
     bulk = 0
     cut = 0
+
+    # Convert gender to lowercase and remove whitespace
+    gender = gender.strip().lower()
     
     # will get gender another way instead of doing this
     if gender == "male":
@@ -291,9 +294,10 @@ async def bmr_info(ctx):
                     age = float(row[3])
                     height = float(row[4])
                     weight = float(row[5])
+                    activity = float(row[6])
 
                     # Calculate BMR based on gender, age, height, and weight
-                    bmr_value = calculate_bmr(gender, age, height, weight)
+                    bmr_value = calculate_bmr(gender, age, height, weight, activity)
                     await ctx.send(f"Your BMR: {bmr_value}")
                     file.close()
                     return
