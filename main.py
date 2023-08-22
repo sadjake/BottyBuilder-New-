@@ -144,7 +144,7 @@ async def update_info(ctx):
             await ctx.send("Your activity level has been changed to 420")
 
 # motivation/encouragement
-@bot.slash_command(name="Quotes", description="Quotes for motivation and encouragement")
+@bot.slash_command(name="quotes", description="Quotes for motivation and encouragement")
 async def motivation(interaction: nextcord.Interaction):
     # Open the quotes CSV file and read the quotes
     with open("quotes_filtered_2.csv", "r") as file:
@@ -155,7 +155,7 @@ async def motivation(interaction: nextcord.Interaction):
     selected_quote = random.choice(quotes)
 
     # Present the quote to the user
-    await interaction.send(selected_quote)
+    await interaction.send(selected_quote) 
 
 # List of commands for the discord bot
 @bot.slash_command(name = "commands", description="List of commands for the discord bot")
