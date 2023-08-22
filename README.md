@@ -26,6 +26,8 @@ Run the main.py file and it should be good to go :thumbsup:
 
 /bmr - calculates your BMR and includes options to calculate Daily Maintenance Calorie Level, Bulk, and Cut.
 
+/quotes - motivational quotes or encouraging messages
+
 /exercises - 
 
 Calculates your BMR using Harris Benedict Equation
