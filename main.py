@@ -78,9 +78,35 @@ class activityLevelView(nextcord.ui.View):
     def __init__(self):
         super().__init__()
     
-    @nextcord.ui.button(label = "Little to no physical activity", style=nextcord.ButtonStyle.primary)
+    @nextcord.ui.button(label="Little to no physical activity", style=nextcord.ButtonStyle.primary)
+    async def no_activity(self, button: nextcord.ui.Button, interaction: Interaction):
+        self.value = 1.2
+        self.stop()
+        await interaction.response.edit_message(content="You have selected little to no physical activity (Activity level: 1.2).")
 
+    @nextcord.ui.button(label="Light activity/exercise, 1-3 times", style=nextcord.ButtonStyle.primary)
+    async def light_activity(self, button: nextcord.ui.Button, interaction: Interaction):
+        self.value = 1.375
+        self.stop()
+        await interaction.response.edit_message(content="You have selected light activity/exercise (Activity level: 1.375).")
 
+    @nextcord.ui.button(label="Moderate activity/exercise, 3-5 times", style=nextcord.ButtonStyle.primary)
+    async def moderate_activity(self, button: nextcord.ui.Button, interaction: Interaction):
+        self.value = 1.55
+        self.stop()
+        await interaction.response.edit_message(content="You have selected moderate activity/exercise (Activity level: 1.55).")
+
+    @nextcord.ui.button(label="Heavy activity/exercise, 5-7 times", style=nextcord.ButtonStyle.primary)
+    async def heavy_activity(self, button: nextcord.ui.Button, interaction: Interaction):
+        self.value = 1.725
+        self.stop()
+        await interaction.response.edit_message(content="You have selected heavy activity/exercise (Activity level: 1.725).")
+
+    @nextcord.ui.button(label="Very heavy activity/exercise, more than once a day", style=nextcord.ButtonStyle.primary)
+    async def very_heavy_activity(self, button: nextcord.ui.Button, interaction: Interaction):
+        self.value = 1.9
+        self.stop()
+        await interaction.response.edit_message(content="You have selected very heavy activity/exercise (Activity level: 1.9).")
 
 class update(nextcord.ui.View):
     def  __init__(self):
