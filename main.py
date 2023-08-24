@@ -108,13 +108,28 @@ class activityLevelView(nextcord.ui.View):
         self.stop()
         await interaction.response.edit_message(content="You have selected very heavy activity/exercise (Activity level: 1.9).")
 
-class update(nextcord.ui.View):
-    def  __init__(self):
-        super().__init__()
-        self.value = None
+# update user info
+async def update(ctx, message, column):
+     # Get user data from CSV file
+    with open("info.csv", "w") as file:
+        userdata = csv.reader(file)
+        next(userdata)  # Skip header row
 
-        self.value = 'changed'
-        self.stop()
+        for row in userdata:
+            data = row[0].split(",")  # Split each row by comma
+            if data[0] == str(ctx.user.id): # user ID is the many numbers
+                # if user already exists, update their info
+                data[column] = file.readline()
+                userdata.writerow(message)
+                file.close()
+                return
+
+    # if user does not exist, add them to the file
+    with open("info.csv", "a") as file: # append to the file
+        # write's the user's id, then 7 N/A's for the other columns
+        file.write(f"{ctx.user.id},N/A,N/A,N/A,N/A,N/A,N/A,N/A\n")
+        update(ctx, message, column)
+        file.close()
 
 # hello message command
 @bot.slash_command(description="My first slash command")
@@ -131,14 +146,12 @@ async def update_info(ctx):
     if view.value == 'name':
         await ctx.send("Please enter your name")
         try:
-            reply = await bot.wait_for("message", timeout=60, check=lambda message: message.author == bot.user)
-            view = update(0)
+            reply = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
+            update(ctx, reply, 1)
+            await ctx.send(f"Your name has been changed to stupid {reply}")
         except asyncio.TimeoutError:
             await ctx.send("Timeout!")
             return
-
-        if view.value == 'changed':
-            await ctx.send(f"Your name has been changed to stupid {view.answer}")
 
     elif view.value == 'gender':
         view = update()
@@ -284,12 +297,6 @@ class bmr(nextcord.ui.View):
 
 # make a function instead?!??!??!?!?!?!?!  wuzzup
 def calculate_bmr(gender, age, height, weight, activity):
-    #initilize variables
-    bmpValue = 0
-    dclm = 0
-    bulk = 0
-    cut = 0
-
     # Convert gender to lowercase and remove whitespace
     #gender = gender.strip().lower()
     
