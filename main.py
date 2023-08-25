@@ -10,8 +10,11 @@ from nextcord.ext import commands
 #logging.basicConfig(level=logging.INFO)
 #activity = nextcord.Activity(type=nextcord.ActivityType.listening, name="/hello")
 
-#intents = nextcord.Intents.default()
-#intents.members = True
+intents = nextcord.Intents.default()
+intents.members = True
+intents.typing = True
+intents.messages = True
+intents.message_content = True
 
 #lets bot run offline from replit for an hour
 # from stay_alive import stay_alive # or whatever you named your file and function
@@ -109,27 +112,32 @@ class activityLevelView(nextcord.ui.View):
         await interaction.response.edit_message(content="You have selected very heavy activity/exercise (Activity level: 1.9).")
 
 # update user info
-async def update(ctx, message, column):
-     # Get user data from CSV file
-    with open("info.csv", "w") as file:
+async def update(ctx, message:str, column:int):
+    user_found = False
+
+    # Read data from the CSV file and update the user's info
+    rows = []
+    with open("info.csv", "r+") as file:
         userdata = csv.reader(file)
-        next(userdata)  # Skip header row
+        rows = list(userdata)
 
-        for row in userdata:
-            data = row[0].split(",")  # Split each row by comma
-            if data[0] == str(ctx.user.id): # user ID is the many numbers
-                # if user already exists, update their info
-                data[column] = file.readline()
-                userdata.writerow(message)
-                file.close()
-                return
+        for i, row in enumerate(rows):
+            data = row[0].split(",")
+            if data[0] == str(ctx.user.id):
+                rows[i][column] = message
+                user_found = True
+                break
 
-    # if user does not exist, add them to the file
-    with open("info.csv", "a") as file: # append to the file
-        # write's the user's id, then 7 N/A's for the other columns
-        file.write(f"{ctx.user.id},N/A,N/A,N/A,N/A,N/A,N/A,N/A\n")
-        update(ctx, message, column)
-        file.close()
+        # If user doesn't exist, add them to the file
+        if not user_found:
+            new_row = [str(ctx.user.id)] + ["N/A"] * 7
+            update(ctx, message, column)
+            rows.append(new_row)
+
+        # Write the data back to the CSV file (appending)
+        with open("info.csv", "w", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerows(rows)
 
 # hello message command
 @bot.slash_command(description="My first slash command")
@@ -146,20 +154,26 @@ async def update_info(ctx):
     if view.value == 'name':
         await ctx.send("Please enter your name")
         try:
-            reply = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
-            update(ctx, reply, 1)
-            await ctx.send(f"Your name has been changed to stupid {reply}")
+            # reply gets the entire object of the message
+            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
+            # use reply.content to get the content of the message
+            await update(ctx, msg.content, 1)
+            await ctx.send(f"Your name has been changed to {msg.content}")
         except asyncio.TimeoutError:
-            await ctx.send("Timeout!")
+            await ctx.send("Timed out!")
             return
 
     elif view.value == 'gender':
-        view = update()
         await ctx.send("Please enter your gender")
-        await view.wait()
-
-        if view.value == 'changed':
-            await ctx.send("Your age has been changed to male")
+        try:
+            # reply gets the entire object of the message
+            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
+            # use reply.content to get the content of the message
+            await update(ctx, msg.content, 2)
+            await ctx.send(f"Your gender has been changed to {msg.content}")
+        except asyncio.TimeoutError:
+            await ctx.send("Timed out!")
+            return
             
     elif view.value == 'age':
         view = update()
