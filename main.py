@@ -10,7 +10,7 @@ from nextcord.ext import commands
 #logging.basicConfig(level=logging.INFO)
 #activity = nextcord.Activity(type=nextcord.ActivityType.listening, name="/hello")
 
-intents = nextcord.Intents.default()
+intents = nextcord.Intents.all()
 intents.members = True
 intents.typing = True
 intents.messages = True
