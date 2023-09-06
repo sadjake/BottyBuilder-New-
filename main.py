@@ -251,6 +251,9 @@ class bmr(nextcord.ui.View):
     async def cut(self, button: nextcord.ui.Button, interaction: Interaction):
         self.value = 'Cut (Calories)'
         self.stop()
+
+# List of exercises to do for certain muscle groups based on home or gym exercises
+
     
 # Use Harris Benedict equation for BMR
 # determine gender of user first
