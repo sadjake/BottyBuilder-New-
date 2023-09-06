@@ -254,6 +254,9 @@ class bmr(nextcord.ui.View):
 
 # List of exercises to do for certain muscle groups based on home or gym exercises
 
+# List of recommended foods to eat during a bulk
+
+# List of recommended foods to eat during a cut
     
 # Use Harris Benedict equation for BMR
 # determine gender of user first
@@ -283,11 +286,11 @@ class bmr(nextcord.ui.View):
 #    userdata = line.strip().split(",")
 
 #    age = float(userdata[1])
- #   height = float(userdata[2])
+#   height = float(userdata[2])
 #    weight = float(userdata[3])
 #    activity = float(userdata[4])
 
- #   if () #if statement for checking user's gender (male/female), just need to add extra column in file
+#if () #if statement for checking user's gender (male/female), just need to add extra column in file
         # can make the if statement using the csv file as an array
         # this one is for when the user is male
         # round to 2 decimal places
