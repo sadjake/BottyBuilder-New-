@@ -11,6 +11,7 @@ from nextcord.ext import commands
 #activity = nextcord.Activity(type=nextcord.ActivityType.listening, name="/hello")
 
 intents = nextcord.Intents.all()
+client = nextcord.Client(intents=intents)
 intents.members = True
 intents.typing = True
 intents.messages = True
