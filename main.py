@@ -141,9 +141,9 @@ async def update(ctx, message:str, column:int):
             writer.writerows(rows)
 
 # hello message command
-@bot.slash_command(description="My first slash command")
-async def hello(interaction: nextcord.Interaction):
-    await interaction.send("Hello!")
+# @bot.slash_command(description="My first slash command")
+# async def hello(interaction: nextcord.Interaction):
+#    await interaction.send("Hello!")
 
 # update user health info
 @bot.slash_command(name = "updateinfo", description="Updating health information")
