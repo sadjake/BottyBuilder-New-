@@ -254,10 +254,18 @@ class bmr(nextcord.ui.View):
         self.stop()
 
 # List of exercises to do for certain muscle groups based on home or gym exercises
+# home/gym -> musle groups? or muscle groups -> home/gym?
 
-# List of recommended foods to eat during a bulk
+@bot.slash_command(name = "exercises", description="List of home or gym exercises for certain muscle groups")
+async def exercises(interaction: nextcord.Interaction):
+    
+    
 
-# List of recommended foods to eat during a cut
+
+# List of recommended foods to eat during a bulk or cut, naming this command "foodreccs" or "foodrec" or "foodrecs" or smt along the lines
+@bot.slash_command(name = "food", description="List of recommended foods for bulking or cutting")
+async def foods(interaction: nextcord.Interaction):
+
     
 # Use Harris Benedict equation for BMR
 # determine gender of user first
