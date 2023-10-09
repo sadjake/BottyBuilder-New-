@@ -35,6 +35,69 @@ async def on_ready():
 # cut - include message "to know the amount you need to cut, use the !BMR command" and include list of foods for cutting
 # dietplan - 
 
+# update user health info
+@bot.slash_command(name = "Update Info", description="Update your health/personal information")
+async def update_info(ctx):
+    view = yourinfo()
+    await ctx.send("What would you like to update?", view=view)
+    await view.wait()
+    
+    if view.value == 'Name':
+        await ctx.send("Please enter your name")
+        try:
+            # reply gets the entire object of the message
+            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
+            # use reply.content to get the content of the message
+            await update(ctx, msg.content, 1)
+            await ctx.send(f"Your name has been changed to {msg.content}")
+        except asyncio.TimeoutError:
+            await ctx.send("Timed out!")
+            return
+
+    elif view.value == 'Gender':
+        await ctx.send("Please enter your gender")
+        try:
+            # reply gets the entire object of the message
+            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
+            # use reply.content to get the content of the message
+            await update(ctx, msg.content, 2)
+            await ctx.send(f"Your gender has been changed to {msg.content}")
+        except asyncio.TimeoutError:
+            await ctx.send("Timed out!")
+            return
+            
+    elif view.value == 'Age':
+        view = update()
+        await ctx.send("Please enter your age")
+        await view.wait()
+
+        if view.value == 'Changed':
+            await ctx.send("Your age has been changed to 69")
+    
+    elif view.value == 'Height':
+        view = update()
+        await ctx.send("Please enter your height")
+        await view.wait()
+
+        if view.value == 'Changed':
+            await ctx.send("Your height has been changed to 420")
+    
+    elif view.value == 'Weight':
+        view = update()
+        await ctx.send("Please enter your weight")
+        await view.wait()
+
+        if view.value == 'Changed':
+            await ctx.send("Your weight has been changed to 666")
+    
+    elif view.value == 'Activity':
+        view = update()
+        await ctx.send("Please enter your activity level")
+        await view.wait()
+
+        if view.value == 'Changed':
+            await ctx.send("Your activity level has been changed to 420")
+
 # buttons for the user's info
 class yourinfo(nextcord.ui.View):
     def  __init__(self):
@@ -140,76 +203,8 @@ async def update(ctx, message:str, column:int):
             writer = csv.writer(file)
             writer.writerows(rows)
 
-# hello message command
-# @bot.slash_command(description="My first slash command")
-# async def hello(interaction: nextcord.Interaction):
-#    await interaction.send("Hello!")
-
-# update user health info
-@bot.slash_command(name = "updateinfo", description="Updating health information")
-async def update_info(ctx):
-    view = yourinfo()
-    await ctx.send("What would you like to update?", view=view)
-    await view.wait()
-    
-    if view.value == 'name':
-        await ctx.send("Please enter your name")
-        try:
-            # reply gets the entire object of the message
-            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
-            # use reply.content to get the content of the message
-            await update(ctx, msg.content, 1)
-            await ctx.send(f"Your name has been changed to {msg.content}")
-        except asyncio.TimeoutError:
-            await ctx.send("Timed out!")
-            return
-
-    elif view.value == 'gender':
-        await ctx.send("Please enter your gender")
-        try:
-            # reply gets the entire object of the message
-            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
-            # use reply.content to get the content of the message
-            await update(ctx, msg.content, 2)
-            await ctx.send(f"Your gender has been changed to {msg.content}")
-        except asyncio.TimeoutError:
-            await ctx.send("Timed out!")
-            return
-            
-    elif view.value == 'age':
-        view = update()
-        await ctx.send("Please enter your age")
-        await view.wait()
-
-        if view.value == 'changed':
-            await ctx.send("Your age has been changed to 69")
-    
-    elif view.value == 'height':
-        view = update()
-        await ctx.send("Please enter your height")
-        await view.wait()
-
-        if view.value == 'changed':
-            await ctx.send("Your height has been changed to 420")
-    
-    elif view.value == 'weight':
-        view = update()
-        await ctx.send("Please enter your weight")
-        await view.wait()
-
-        if view.value == 'changed':
-            await ctx.send("Your weight has been changed to 666")
-    
-    elif view.value == 'activity':
-        view = update()
-        await ctx.send("Please enter your activity level")
-        await view.wait()
-
-        if view.value == 'changed':
-            await ctx.send("Your activity level has been changed to 420")
-
 # motivation/encouragement
-@bot.slash_command(name="quotes", description="Quotes for motivation and encouragement")
+@bot.slash_command(name="Quotes", description="Quotes for motivation and encouragement")
 async def motivation(interaction: nextcord.Interaction):
     # Open the quotes CSV file and read the quotes
     with open("quotes_filtered_2.csv", "r") as file:
@@ -258,13 +253,23 @@ class bmr(nextcord.ui.View):
 
 @bot.slash_command(name = "exercises", description="List of home or gym exercises for certain muscle groups")
 async def exercises(interaction: nextcord.Interaction):
-    
-    
 
 
+# chest
+# 
+
+# push - pull - leg split too?
+    
 # List of recommended foods to eat during a bulk or cut, naming this command "foodreccs" or "foodrec" or "foodrecs" or smt along the lines
 @bot.slash_command(name = "food", description="List of recommended foods for bulking or cutting")
 async def foods(interaction: nextcord.Interaction):
+    
+# food recommended for bulking
+# food recommended for cutting
+
+@bot.slash_command(name = "workout routines", description="List of recommended foods for bulking or cutting")
+async def workout(interaction: nextcord.Interaction):
+
 
     
 # Use Harris Benedict equation for BMR
