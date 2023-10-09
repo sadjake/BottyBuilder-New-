@@ -219,35 +219,198 @@ async def motivation(interaction: nextcord.Interaction):
     # Present the quote to the user
     await interaction.send(selected_quote) 
 
-# List of commands for the discord bot
-@bot.slash_command(name = "Commands", description="List of commands for the discord bot")
-async def commands(interaction: nextcord.Interaction):
-    await interaction.send("Here is the list of available commands.\n\n/commands - List of commands to use\n/BMR - Let BottyBuilder calculate your BMR, daily calorie needs, and how much you need to eat to bulk/cut.\n/bulkfoods - A list of foods that are beneficial for bulking. To know the AMOUNT you need to eat to bulk, use the !BMR command.\n/cutfoods - A list of foods that are beneficial for cutting. To know the AMOUNT you need to eat to cut, use the !BMR command.")
+# # List of commands for the discord bot
+# @bot.slash_command(name = "Commands", description="List of commands for the discord bot")
+# async def commands(interaction: nextcord.Interaction):
+#     await interaction.send("Here is the list of available commands.\n \n/commands - List of commands to use\n/BMR - Let BottyBuilder calculate your BMR, daily calorie needs, and how much you need to eat to bulk/cut.\n/bulkfoods - A list of foods that are beneficial for bulking. To know the AMOUNT you need to eat to bulk, use the !BMR command.\n/cutfoods - A list of foods that are beneficial for cutting. To know the AMOUNT you need to eat to cut, use the !BMR command.")
 
 # List of exercises to do for certain muscle groups based on home or gym exercises
 # home/gym -> musle groups? or muscle groups -> home/gym?
-
-@bot.slash_command(name = "exercises", description="List of home or gym exercises for certain muscle groups")
-async def exercises(interaction: nextcord.Interaction):
-
-
-# chest
-# 
-
-# push - pull - leg split too?
+@bot.slash_command(name="exercises", description="List of home or gym exercises for certain muscle groups")
+async def exercise_recommendations(interaction: nextcord.Interaction):
+    # Create the initial view with options for gym and home exercises
+    exercise_options_view = ExerciseOptionsView()
     
+    await interaction.send("Please choose an exercise category:", view=exercise_options_view)
+    await exercise_options_view.wait()
+
+class ExerciseOptionsView(nextcord.ui.View):
+    def __init__(self):
+        super().__init__()
+    
+    @nextcord.ui.button(label="Gym Exercises", style=nextcord.ButtonStyle.primary, custom_id="gym_exercises")
+    async def gym_exercises(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        self.clear_items()  # Clear the existing buttons
+        await self.show_muscle_group_buttons(interaction, is_gym=True)
+    
+    @nextcord.ui.button(label="Home Exercises", style=nextcord.ButtonStyle.primary, custom_id="home_exercises")
+    async def home_exercises(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        self.clear_items()  # Clear the existing buttons
+        await self.show_muscle_group_buttons(interaction, is_gym=False)
+
+    async def show_muscle_group_buttons(self, interaction: nextcord.Interaction, is_gym: bool):
+        # Define muscle groups based on the exercise category (gym or home)
+        muscle_groups = {
+            "Chest": ["Bench press", "Dumbbell flyes", "Cable crossovers"],
+            "Back": ["Lat pulldowns", "Barbell rows", "Deadlifts"],
+            "Arms": ["Bicep curls", "Tricep pushdowns", "Hammer curls"],
+            "Abdominals": ["Crunches", "Leg raises", "Planks"],
+            "Legs": ["Squats", "Leg press", "Lunges"],
+            "Shoulders": ["Overhead press", "Lateral raises", "Front raises"]
+        } if is_gym else {
+            "Chest": ["Push-ups", "Dumbbell chest press", "Floor flyes"],
+            "Back": ["Bodyweight rows", "Superman exercises", "Reverse snow angels"],
+            "Arms": ["Chair dips", "Bicep curls with household items", "Tricep kickbacks with a bag"],
+            "Abdominals": ["Sit-ups", "Russian twists", "Planks"],
+            "Legs": ["Bodyweight squats", "Lunges", "Step-ups on a sturdy chair"],
+            "Shoulders": ["Pike push-ups", "Bottle lateral raises", "Shoulder shrugs with household items"]
+        }
+
+        for muscle_group in muscle_groups:
+            # Use the muscle group name as a custom ID to identify the selected group later
+            self.add_item(nextcord.ui.Button(label=muscle_group, style=nextcord.ButtonStyle.primary, custom_id=muscle_group))
+
+        await interaction.response.edit_message(content="Please choose a muscle group:", view=self)
+
+@bot.component("button")
+async def muscle_group_button_callback(interaction: nextcord.Interaction):
+    muscle_group = interaction.custom_id
+
+    # Retrieve the exercises based on the selected muscle group and exercise category
+    is_gym = interaction.message.embeds[0].title == "Gym Exercises"
+    exercises = {
+        "Chest": ["Bench press", "Dumbbell flyes", "Cable crossovers"],
+        "Back": ["Lat pulldowns", "Barbell rows", "Deadlifts"],
+        "Arms": ["Bicep curls", "Tricep pushdowns", "Hammer curls"],
+        "Abdominals": ["Crunches", "Leg raises", "Planks"],
+        "Legs": ["Squats", "Leg press", "Lunges"],
+        "Shoulders": ["Overhead press", "Lateral raises", "Front raises"]
+    } if is_gym else {
+        "Chest": ["Push-ups", "Dumbbell chest press", "Floor flyes"],
+        "Back": ["Bodyweight rows", "Superman exercises", "Reverse snow angels"],
+        "Arms": ["Chair dips", "Bicep curls with household items", "Tricep kickbacks with a bag"],
+        "Abdominals": ["Sit-ups", "Russian twists", "Planks"],
+        "Legs": ["Bodyweight squats", "Lunges", "Step-ups on a sturdy chair"],
+        "Shoulders": ["Pike push-ups", "Bottle lateral raises", "Shoulder shrugs with household items"]
+    }
+
+    selected_exercises = exercises.get(muscle_group, [])
+
+    if selected_exercises:
+        await interaction.response.edit_message(content=f"Exercises for {muscle_group}:\n\n{', '.join(selected_exercises)}")
+    else:
+        await interaction.response.edit_message(content=f"No exercises found for {muscle_group}")
+
+# Register the view with the bot
+bot.add_view(ExerciseOptionsView())
+
 # List of recommended foods to eat during a bulk or cut, naming this command "foodreccs" or "foodrec" or "foodrecs" or smt along the lines
-@bot.slash_command(name = "food", description="List of recommended foods for bulking or cutting")
-async def foods(interaction: nextcord.Interaction):
+@bot.slash_command(name="Food", description="List of recommended foods for bulking or cutting")
+async def food_recommendations(interaction: nextcord.Interaction):
+    # Create the initial view with options for bulking and cutting
+    food_options_view = FoodOptionsView()
     
-# food recommended for bulking
-# food recommended for cutting
+    await interaction.send("Please choose a dietary goal:", view=food_options_view)
+    await food_options_view.wait()
 
-@bot.slash_command(name = "workout routines", description="List of recommended foods for bulking or cutting")
+class FoodOptionsView(nextcord.ui.View):
+    def __init__(self):
+        super().__init__()
+    
+    @nextcord.ui.button(label="Bulking", style=nextcord.ButtonStyle.primary, custom_id="bulking")
+    async def bulking(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        self.clear_items()  # Clear the existing buttons
+        await self.show_food_recommendations(interaction, is_bulking=True)
+    
+    @nextcord.ui.button(label="Cutting", style=nextcord.ButtonStyle.primary, custom_id="cutting")
+    async def cutting(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        self.clear_items()  # Clear the existing buttons
+        await self.show_food_recommendations(interaction, is_bulking=False)
+
+    async def show_food_recommendations(self, interaction: nextcord.Interaction, is_bulking: bool):
+        food_recommendations = {
+            "Bulking": [
+                "Lean protein sources (chicken, turkey, fish)",
+                "Complex carbohydrates (brown rice, quinoa, oats)",
+                "Healthy fats (avocado, nuts, olive oil)",
+                "Dairy products (Greek yogurt, cottage cheese)",
+                "Leafy greens and vegetables",
+                "Fruits (berries, bananas)",
+                "Protein shakes or bars"
+            ],
+            "Cutting": [
+                "Lean protein sources (chicken breast, turkey, fish)",
+                "Non-starchy vegetables (broccoli, spinach, kale)",
+                "Low-calorie fruits (berries, grapefruit)",
+                "Complex carbohydrates in moderation (sweet potatoes, quinoa)",
+                "Healthy fats in moderation (avocado, almonds)",
+                "Water and herbal tea (to stay hydrated)",
+                "Lean protein shakes or bars (as snacks)"
+            ]
+        }
+        
+        selected_recommendations = food_recommendations["Bulking" if is_bulking else "Cutting"]
+
+        await interaction.response.edit_message(content=f"Here are some recommended foods for {'bulking' if is_bulking else 'cutting'}:\n\n" + "\n".join(selected_recommendations))
+
+# workout plans/routines
+@bot.slash_command(name="Routines", description="List of workout routines to follow")
 async def workout(interaction: nextcord.Interaction):
-
-
+    # Create the initial view with options for workout plans
+    workout_options_view = WorkoutOptionsView()
     
+    await interaction.send("Please choose a workout plan:", view=workout_options_view)
+    await workout_options_view.wait()
+
+
+class WorkoutOptionsView(nextcord.ui.View):
+    def __init__(self):
+        super().__init__()
+    
+    @nextcord.ui.button(label="Beginners", style=nextcord.ButtonStyle.primary, custom_id="beginners")
+    async def beginners(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        self.clear_items()  # Clear the existing buttons
+        await self.show_workout_plan(interaction, plan="Beginners")
+    
+    @nextcord.ui.button(label="Push-Pull-Leg Split", style=nextcord.ButtonStyle.primary, custom_id="push_pull_leg_split")
+    async def push_pull_leg_split(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        self.clear_items()  # Clear the existing buttons
+        await self.show_workout_plan(interaction, plan="Push-Pull-Leg Split")
+
+    async def show_workout_plan(self, interaction: nextcord.Interaction, plan: str):
+        workout_plans = {
+            "Beginners": {
+                "Monday - Arms and Shoulders": [
+                    "Bicep curls",
+                    "Shoulder press",
+                    "Tricep dips",
+                    "Lateral raises"
+                ],
+                "Wednesday - Legs and Abdominals": [],
+                "Friday - Chest and Back": []
+            },
+            "Push-Pull-Leg Split": {
+                "Monday - Push": [
+                    "Bench Press",
+                    "Seated Dumbbell Shoulder Press",
+                    "Incline Dumbbell Press",
+                    "Side Lateral Raises",
+                    "Triceps Pressdowns",
+                    "Overhead Triceps Extension"
+                ],
+                "Wednesday - Pull": [],
+                "Friday - Leg": []
+            }
+        }
+
+        selected_workout_plan = workout_plans.get(plan, {})
+
+        if selected_workout_plan:
+            workout_plan_text = "\n".join([f"{day}\n" + "\n".join(exercises) for day, exercises in selected_workout_plan.items()])
+            await interaction.response.edit_message(content=f"Here is the {plan} workout plan:\n\n{workout_plan_text}")
+        else:
+            await interaction.response.edit_message(content=f"No workout plan found for {plan}")
+
 # Use Harris Benedict equation for BMR
 # determine gender of user first
 # for male:
