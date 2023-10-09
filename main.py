@@ -98,7 +98,7 @@ async def update_info(ctx):
         if view.value == 'Changed':
             await ctx.send("Your activity level has been changed to 420")
 
-# buttons for the user's info
+# buttons for the user's info, within the update info command
 class yourinfo(nextcord.ui.View):
     def  __init__(self):
         super().__init__()
@@ -135,12 +135,14 @@ class yourinfo(nextcord.ui.View):
         self.value = 'activity'
         self.stop()
         await self.ask_activity_level(interaction)
-    
+
+    # this is for the "connecting" the activity level option to the activityLevelView buttons
     async def ask_activity_level(self, interaction: Interaction):
         activity_level_view = activityLevelView()
         await interaction.send("How active are you?", view=activity_level_view)
         await activity_level_view.wait()
 
+# buttons for activity level, within the activity level option within the update info command
 class activityLevelView(nextcord.ui.View):
     def __init__(self):
         super().__init__()
@@ -203,7 +205,7 @@ async def update(ctx, message:str, column:int):
             writer = csv.writer(file)
             writer.writerows(rows)
 
-# motivation/encouragement
+# motivation/encouragement command
 @bot.slash_command(name="Quotes", description="Quotes for motivation and encouragement")
 async def motivation(interaction: nextcord.Interaction):
     # Open the quotes CSV file and read the quotes
@@ -222,31 +224,36 @@ async def motivation(interaction: nextcord.Interaction):
 async def commands(interaction: nextcord.Interaction):
     await interaction.send("Here is the list of available commands.\n\n/commands - List of commands to use\n/BMR - Let BottyBuilder calculate your BMR, daily calorie needs, and how much you need to eat to bulk/cut.\n/bulkfoods - A list of foods that are beneficial for bulking. To know the AMOUNT you need to eat to bulk, use the !BMR command.\n/cutfoods - A list of foods that are beneficial for cutting. To know the AMOUNT you need to eat to cut, use the !BMR command.")
 
-# BMR command + buttons
-class bmr(nextcord.ui.View):
-    def  __init__(self):
-        super().__init__()
-        self.value = None
+# Command for the 
+@bot.slash_command(name = "BMR", description="Calculate your BMR, Daily Calorie Maintenance Level, or amount of calories you need to bulk or cut.")
+async def bmr(interaction: nextcord.Interaction):
     
-    @nextcord.ui.button(label = "BMR", style = nextcord.ButtonStyle.primary)
-    async def bmr(self, button: nextcord.ui.Button, interaction: Interaction):
-        self.value  = 'BMR'
-        self.stop()
+    
+# # BMR command + buttons
+# class bmr(nextcord.ui.View):
+#     def  __init__(self):
+#         super().__init__()
+#         self.value = None
+    
+#     @nextcord.ui.button(label = "BMR", style = nextcord.ButtonStyle.primary)
+#     async def bmr(self, button: nextcord.ui.Button, interaction: Interaction):
+#         self.value  = 'BMR'
+#         self.stop()
 
-    @nextcord.ui.button(label = "Daily Calorie Needs", style=nextcord.ButtonStyle.primary)
-    async def dcn(self, button: nextcord.ui.Button, interaction: Interaction):
-        self.value = 'Daily Calorie Needs'
-        self.stop()
+#     @nextcord.ui.button(label = "Daily Calorie Needs", style=nextcord.ButtonStyle.primary)
+#     async def dcn(self, button: nextcord.ui.Button, interaction: Interaction):
+#         self.value = 'Daily Calorie Needs'
+#         self.stop()
 
-    @nextcord.ui.button(label = "Bulk (Calories)", style=nextcord.ButtonStyle.primary)
-    async def bulk(self, button: nextcord.ui.Button, interaction: Interaction):
-        self.value = 'Bulk (Calories)'
-        self.stop()
+#     @nextcord.ui.button(label = "Bulk (Calories)", style=nextcord.ButtonStyle.primary)
+#     async def bulk(self, button: nextcord.ui.Button, interaction: Interaction):
+#         self.value = 'Bulk (Calories)'
+#         self.stop()
 
-    @nextcord.ui.button(label = "Cut (Calories)", style=nextcord.ButtonStyle.primary)
-    async def cut(self, button: nextcord.ui.Button, interaction: Interaction):
-        self.value = 'Cut (Calories)'
-        self.stop()
+#     @nextcord.ui.button(label = "Cut (Calories)", style=nextcord.ButtonStyle.primary)
+#     async def cut(self, button: nextcord.ui.Button, interaction: Interaction):
+#         self.value = 'Cut (Calories)'
+#         self.stop()
 
 # List of exercises to do for certain muscle groups based on home or gym exercises
 # home/gym -> musle groups? or muscle groups -> home/gym?
