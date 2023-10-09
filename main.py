@@ -220,35 +220,9 @@ async def motivation(interaction: nextcord.Interaction):
     await interaction.send(selected_quote) 
 
 # List of commands for the discord bot
-@bot.slash_command(name = "commands", description="List of commands for the discord bot")
+@bot.slash_command(name = "Commands", description="List of commands for the discord bot")
 async def commands(interaction: nextcord.Interaction):
     await interaction.send("Here is the list of available commands.\n\n/commands - List of commands to use\n/BMR - Let BottyBuilder calculate your BMR, daily calorie needs, and how much you need to eat to bulk/cut.\n/bulkfoods - A list of foods that are beneficial for bulking. To know the AMOUNT you need to eat to bulk, use the !BMR command.\n/cutfoods - A list of foods that are beneficial for cutting. To know the AMOUNT you need to eat to cut, use the !BMR command.")
-    
- # BMR command + buttons
-class bmr(nextcord.ui.View):
-     def  __init__(self):
-         super().__init__()
-         self.value = None
-    
-     @nextcord.ui.button(label = "BMR", style = nextcord.ButtonStyle.primary)
-     async def bmr(self, button: nextcord.ui.Button, interaction: Interaction):
-         self.value  = 'BMR'
-         self.stop()
-
-     @nextcord.ui.button(label = "Daily Calorie Needs", style=nextcord.ButtonStyle.primary)
-     async def dcn(self, button: nextcord.ui.Button, interaction: Interaction):
-         self.value = 'Daily Calorie Needs'
-         self.stop()
-
-     @nextcord.ui.button(label = "Bulk (Calories)", style=nextcord.ButtonStyle.primary)
-     async def bulk(self, button: nextcord.ui.Button, interaction: Interaction):
-         self.value = 'Bulk (Calories)'
-         self.stop()
-
-     @nextcord.ui.button(label = "Cut (Calories)", style=nextcord.ButtonStyle.primary)
-     async def cut(self, button: nextcord.ui.Button, interaction: Interaction):
-         self.value = 'Cut (Calories)'
-         self.stop()
 
 # List of exercises to do for certain muscle groups based on home or gym exercises
 # home/gym -> musle groups? or muscle groups -> home/gym?
@@ -330,6 +304,32 @@ async def workout(interaction: nextcord.Interaction):
 
     # value for cut
 #    cut = dcml*0.85
+
+ # BMR command + buttons
+class bmr(nextcord.ui.View):
+     def  __init__(self):
+         super().__init__()
+         self.value = None
+    
+     @nextcord.ui.button(label = "BMR", style = nextcord.ButtonStyle.primary)
+     async def bmr(self, button: nextcord.ui.Button, interaction: Interaction):
+         self.value  = 'BMR'
+         self.stop()
+
+     @nextcord.ui.button(label = "Daily Calorie Needs", style=nextcord.ButtonStyle.primary)
+     async def dcn(self, button: nextcord.ui.Button, interaction: Interaction):
+         self.value = 'Daily Calorie Needs'
+         self.stop()
+
+     @nextcord.ui.button(label = "Bulk (Calories)", style=nextcord.ButtonStyle.primary)
+     async def bulk(self, button: nextcord.ui.Button, interaction: Interaction):
+         self.value = 'Bulk (Calories)'
+         self.stop()
+
+     @nextcord.ui.button(label = "Cut (Calories)", style=nextcord.ButtonStyle.primary)
+     async def cut(self, button: nextcord.ui.Button, interaction: Interaction):
+         self.value = 'Cut (Calories)'
+         self.stop()
 
 # make a function instead?!??!??!?!?!?!?!  wuzzup
 def calculate_bmr(gender, age, height, weight, activity):
