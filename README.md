@@ -54,4 +54,5 @@ Multiply Daily Caloric Intake by 1.1~1.2
 Cut:
 Multiply Daily Caloric Intake by 0.9~0.8
 
-
+# NEXT STEPS?
+Implement an API to retrieve a list of recommended exercises, workout plans, or foods (instead of manually adding them). 
