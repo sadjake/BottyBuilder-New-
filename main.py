@@ -107,12 +107,13 @@ class activityLevelView(nextcord.ui.View):
         await interaction.response.edit_message(content="You have selected very heavy activity/exercise (Activity level: 1.9).")
 
 # update user info
+# update user info
 async def update(ctx, message:str, column:int):
     user_found = False
 
     # Read data from the CSV file and update the user's info
     rows = []
-    with open("info.csv", "r+", encoding="utf-8") as file:
+    with open("info.csv", "r+", encoding="UTF-8") as file:
         userdata = csv.reader(file)
         rows = list(userdata)
 
@@ -130,7 +131,7 @@ async def update(ctx, message:str, column:int):
             rows.append(new_row)
 
         # Write the data back to the CSV file (appending)
-        with open("info.csv", "w", newline="", encoding="utf-8") as file:
+        with open("info.csv", "w", newline="") as file:
             writer = csv.writer(file)
             writer.writerows(rows)
 
@@ -149,7 +150,7 @@ async def update_info(ctx):
     if view.value == 'name':
         await ctx.send("Please enter your name")
         try:
-            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author == ctx.user)
+            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
             name_value = msg.content.strip()
             if name_value:
                 await update(ctx, name_value, 1)
@@ -167,7 +168,7 @@ async def update_info(ctx):
             msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
             gender_value = msg.content.strip()
             if gender_value:
-                await update(ctx, gender_value, 1)
+                await update(ctx, gender_value, 2)
                 await ctx.send(f"Your gender has been changed to {gender_value}")
             else:
                 await ctx.send("Gender cannot be empty. Please try again.")
@@ -182,7 +183,7 @@ async def update_info(ctx):
             msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author == ctx.author)
             age_value = msg.content.strip()
             if age_value:
-                await update(ctx, age_value, 1)
+                await update(ctx, age_value, 3)
                 await ctx.send(f"Your age has been changed to {name_value}")
             else:
                 await ctx.send("Age cannot be empty. Please try again.")
