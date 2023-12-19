@@ -1,6 +1,6 @@
 from SECRET import token
 import nextcord, time, datetime, asyncio, csv, random
-from nextcord import Interaction
+from nextcord import Interaction, Intents
 from nextcord.ext import commands
 
 #import logging
@@ -10,19 +10,13 @@ from nextcord.ext import commands
 #logging.basicConfig(level=logging.INFO)
 #activity = nextcord.Activity(type=nextcord.ActivityType.listening, name="/hello")
 
-intents = nextcord.Intents.all()
-client = nextcord.Client(intents=intents)
-intents.members = True
-intents.typing = True
-intents.messages = True
-intents.message_content = True
+intents = Intents.all()
+# creates an instance of commands.Bot class
+bot = commands.Bot(intents=intents)
 
 #lets bot run offline from replit for an hour
 # from stay_alive import stay_alive # or whatever you named your file and function
 # stay_alive() # call the function
-
-# creates an instance of commands.Bot class
-bot = commands.Bot()
 
 @bot.event
 async def on_ready():
@@ -140,10 +134,10 @@ async def update(ctx, message:str, column:int):
             writer = csv.writer(file)
             writer.writerows(rows)
 
-# hello message command
-@bot.slash_command(description="My first slash command")
-async def hello(interaction: nextcord.Interaction):
-    await interaction.send("Hello!")
+# # hello message command
+# @bot.slash_command(description="My first slash command")
+# async def hello(interaction: nextcord.Interaction):
+#     await interaction.send("Hello!")
 
 # update user health info
 @bot.slash_command(name = "updateinfo", description="Updating health information")
@@ -151,15 +145,17 @@ async def update_info(ctx):
     view = yourinfo()
     await ctx.send("What would you like to update?", view=view)
     await view.wait()
-    
+
     if view.value == 'name':
         await ctx.send("Please enter your name")
         try:
-            # reply gets the entire object of the message
-            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
-            # use reply.content to get the content of the message
-            await update(ctx, msg.content, 1)
-            await ctx.send(f"Your name has been changed to {msg.content}")
+            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author == ctx.user)
+            name_value = msg.content.strip()
+            if name_value:
+                await update(ctx, name_value, 1)
+                await ctx.send(f"Your name has been changed to {name_value}")
+            else:
+                await ctx.send("Name cannot be empty. Please try again.")
         except asyncio.TimeoutError:
             await ctx.send("Timed out!")
             return
@@ -169,9 +165,12 @@ async def update_info(ctx):
         try:
             # reply gets the entire object of the message
             msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
-            # use reply.content to get the content of the message
-            await update(ctx, msg.content, 2)
-            await ctx.send(f"Your gender has been changed to {msg.content}")
+            gender_value = msg.content.strip()
+            if gender_value:
+                await update(ctx, gender_value, 1)
+                await ctx.send(f"Your gender has been changed to {gender_value}")
+            else:
+                await ctx.send("Gender cannot be empty. Please try again.")
         except asyncio.TimeoutError:
             await ctx.send("Timed out!")
             return
@@ -180,10 +179,13 @@ async def update_info(ctx):
         await ctx.send("Please enter your age")
         try:
             # reply gets the entire object of the message
-            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
-            # use reply.content to get the content of the message
-            await update(ctx, msg.content, 3)  # Change the column number to match the age column
-            await ctx.send(f"Your age has been changed to {msg.content}")
+            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author == ctx.author)
+            age_value = msg.content.strip()
+            if age_value:
+                await update(ctx, age_value, 1)
+                await ctx.send(f"Your age has been changed to {name_value}")
+            else:
+                await ctx.send("Age cannot be empty. Please try again.")
         except asyncio.TimeoutError:
             await ctx.send("Timed out!")
             return
@@ -191,11 +193,14 @@ async def update_info(ctx):
     elif view.value == 'height':
         await ctx.send("Please enter your height")
         try:
-            # reply gets the entire object of the message
             msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
-            # use reply.content to get the content of the message
-            await update(ctx, msg.content, 4)  # Change the column number to match the height column
-            await ctx.send(f"Your height has been changed to {msg.content}")
+            # Check if the content is non-empty before trying to convert to float
+            if msg.content.strip():
+                height_value = float(msg.content)
+                await update(ctx, height_value, 4)  # Change the column number to match the height column
+                await ctx.send(f"Your height has been changed to {height_value}")
+            else:
+                await ctx.send("Height value cannot be empty. Please try again.")
         except asyncio.TimeoutError:
             await ctx.send("Timed out!")
             return
@@ -203,11 +208,14 @@ async def update_info(ctx):
     elif view.value == 'weight':
         await ctx.send("Please enter your weight")
         try:
-            # reply gets the entire object of the message
             msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
-            # use reply.content to get the content of the message
-            await update(ctx, msg.content, 5)  # Change the column number to match the weight column
-            await ctx.send(f"Your weight has been changed to {msg.content}")
+            # Check if the content is non-empty before trying to convert to float
+            if msg.content.strip():
+                weight_value = float(msg.content)
+                await update(ctx, weight_value, 5)  # Change the column number to match the weight column
+                await ctx.send(f"Your weight has been changed to {weight_value}")
+            else:
+                await ctx.send("Weight value cannot be empty. Please try again.")
         except asyncio.TimeoutError:
             await ctx.send("Timed out!")
             return
@@ -215,11 +223,14 @@ async def update_info(ctx):
     elif view.value == 'activity':
         await ctx.send("Please enter your activity level")
         try:
-            # reply gets the entire object of the message
             msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
-            # use reply.content to get the content of the message
-            await update(ctx, msg.content, 6)  # Change the column number to match the activity level column
-            await ctx.send(f"Your activity level has been changed to {msg.content}")
+            # Check if the content is non-empty before trying to convert to float
+            if msg.content.strip():
+                activity_value = float(msg.content)
+                await update(ctx, activity_value, 6)  # Change the column number to match the activity column
+                await ctx.send(f"Your activity level has been changed to {activity_value}")
+            else:
+                await ctx.send("Activity level value cannot be empty. Please try again.")
         except asyncio.TimeoutError:
             await ctx.send("Timed out!")
             return
@@ -238,10 +249,200 @@ async def motivation(interaction: nextcord.Interaction):
     # Present the quote to the user
     await interaction.send(selected_quote) 
 
-# List of commands for the discord bot
-@bot.slash_command(name = "commands", description="List of commands for the discord bot")
-async def commands(interaction: nextcord.Interaction):
-    await interaction.send("Here is the list of available commands.\n\n/commands - List of commands to use\n/BMR - Let BottyBuilder calculate your BMR, daily calorie needs, and how much you need to eat to bulk/cut.\n/bulkfoods - A list of foods that are beneficial for bulking. To know the AMOUNT you need to eat to bulk, use the !BMR command.\n/cutfoods - A list of foods that are beneficial for cutting. To know the AMOUNT you need to eat to cut, use the !BMR command.")
+# # List of commands for the discord bot
+# @bot.slash_command(name = "commands", description="List of commands for the discord bot")
+# async def commands(interaction: nextcord.Interaction):
+#     await interaction.send("Here is the list of available commands.\n\n/commands - List of commands to use\n/BMR - Let BottyBuilder calculate your BMR, daily calorie needs, and how much you need to eat to bulk/cut.\n/bulkfoods - A list of foods that are beneficial for bulking. To know the AMOUNT you need to eat to bulk, use the !BMR command.\n/cutfoods - A list of foods that are beneficial for cutting. To know the AMOUNT you need to eat to cut, use the !BMR command.")
+
+# Exercise recommendations command
+@bot.slash_command(name="exercises", description="List of home or gym exercises for certain muscle groups")
+async def exercise_recommendations(interaction: nextcord.Interaction):
+    # Create the initial view with options for gym and home exercises
+    exercise_options_view = ExerciseOptionsView()
+
+    await interaction.send("Please choose an exercise category:", view=exercise_options_view)
+    await exercise_options_view.wait()
+
+class ExerciseOptionsView(nextcord.ui.View):
+    def __init__(self):
+        super().__init__()
+        self.is_gym = None  # Attribute to store exercise category
+
+    @nextcord.ui.button(label="Gym Exercises", style=nextcord.ButtonStyle.primary, custom_id="gym_exercises")
+    async def gym_exercises(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        self.clear_items()  # Clear the existing buttons
+        self.is_gym = True
+        await self.show_muscle_group_buttons(interaction)
+
+    @nextcord.ui.button(label="Home Exercises", style=nextcord.ButtonStyle.primary, custom_id="home_exercises")
+    async def home_exercises(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        self.clear_items()  # Clear the existing buttons
+        self.is_gym = False
+        await self.show_muscle_group_buttons(interaction)
+
+    async def show_muscle_group_buttons(self, interaction: nextcord.Interaction):
+        # Define muscle groups based on the exercise category (gym or home)
+        muscle_groups = {
+            "Chest": ["Bench press", "Dumbbell flyes", "Cable crossovers"],
+            "Back": ["Lat pulldowns", "Barbell rows", "Deadlifts"],
+            "Arms": ["Bicep curls", "Tricep pushdowns", "Hammer curls"],
+            "Abdominals": ["Crunches", "Leg raises", "Planks"],
+            "Legs": ["Squats", "Leg press", "Lunges"],
+            "Shoulders": ["Overhead press", "Lateral raises", "Front raises"]
+        } if self.is_gym else {
+            "Chest": ["Push-ups", "Dumbbell chest press", "Floor flyes"],
+            "Back": ["Bodyweight rows", "Superman exercises", "Reverse snow angels"],
+            "Arms": ["Chair dips", "Bicep curls with household items", "Tricep kickbacks with a bag"],
+            "Abdominals": ["Sit-ups", "Russian twists", "Planks"],
+            "Legs": ["Bodyweight squats", "Lunges", "Step-ups on a sturdy chair"],
+            "Shoulders": ["Pike push-ups", "Bottle lateral raises", "Shoulder shrugs with household items"]
+        }
+
+        content = "Please choose a muscle group:\n\n"
+        for muscle_group, exercises in muscle_groups.items():
+            content += f"{muscle_group}: {', '.join(exercises)}\n"
+
+            # Use the muscle group name as a custom ID to identify the selected group later
+            self.add_item(nextcord.ui.Button(label=muscle_group, style=nextcord.ButtonStyle.primary, custom_id=f"exercise_{muscle_group}"))
+
+        await interaction.response.edit_message(content=content, view=self)
+
+@bot.event
+async def on_button_click(interaction: nextcord.Interaction):
+    if interaction.custom_id.startswith("exercise_"):
+        muscle_group = interaction.custom_id[len("exercise_"):]
+
+        # Retrieve the exercises based on the selected muscle group and exercise category
+        is_gym = interaction.view.is_gym
+        exercises = {
+            "Chest": ["Bench press", "Dumbbell flyes", "Cable crossovers"],
+            "Back": ["Lat pulldowns", "Barbell rows", "Deadlifts"],
+            "Arms": ["Bicep curls", "Tricep pushdowns", "Hammer curls"],
+            "Abdominals": ["Crunches", "Leg raises", "Planks"],
+            "Legs": ["Squats", "Leg press", "Lunges"],
+            "Shoulders": ["Overhead press", "Lateral raises", "Front raises"]
+        } if is_gym else {
+            "Chest": ["Push-ups", "Dumbbell chest press", "Floor flyes"],
+            "Back": ["Bodyweight rows", "Superman exercises", "Reverse snow angels"],
+            "Arms": ["Chair dips", "Bicep curls with household items", "Tricep kickbacks with a bag"],
+            "Abdominals": ["Sit-ups", "Russian twists", "Planks"],
+            "Legs": ["Bodyweight squats", "Lunges", "Step-ups on a sturdy chair"],
+            "Shoulders": ["Pike push-ups", "Bottle lateral raises", "Shoulder shrugs with household items"]
+        }
+
+        selected_exercises = exercises.get(muscle_group, [])
+
+        if selected_exercises:
+            await interaction.edit_original_message(content=f"Exercises for {muscle_group}:\n\n{', '.join(selected_exercises)}")
+        else:
+            await interaction.edit_original_message(content=f"No exercises found for {muscle_group}")
+
+# # List of recommended foods to eat during a bulk or cut
+# @bot.slash_command(name="Food", description="List of recommended foods for bulking or cutting")
+# async def food_recommendations(interaction: nextcord.Interaction):
+#     # Create the initial view with options for bulking and cutting
+#     food_options_view = FoodOptionsView()
+
+#     await interaction.send("Please choose a dietary goal:", view=food_options_view)
+#     await food_options_view.wait()
+
+# class FoodOptionsView(nextcord.ui.View):
+#     def __init__(self):
+#         super().__init__()
+
+#     @nextcord.ui.button(label="Bulking", style=nextcord.ButtonStyle.primary, custom_id="bulking")
+#     async def bulking(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+#         self.clear_items()  # Clear the existing buttons
+#         await self.show_food_recommendations(interaction, is_bulking=True)
+
+#     @nextcord.ui.button(label="Cutting", style=nextcord.ButtonStyle.primary, custom_id="cutting")
+#     async def cutting(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+#         self.clear_items()  # Clear the existing buttons
+#         await self.show_food_recommendations(interaction, is_bulking=False)
+
+#     async def show_food_recommendations(self, interaction: nextcord.Interaction, is_bulking: bool):
+#         food_recommendations = {
+#             "Bulking": [
+#                 "Lean protein sources (chicken, turkey, fish)",
+#                 "Complex carbohydrates (brown rice, quinoa, oats)",
+#                 "Healthy fats (avocado, nuts, olive oil)",
+#                 "Dairy products (Greek yogurt, cottage cheese)",
+#                 "Leafy greens and vegetables",
+#                 "Fruits (berries, bananas)",
+#                 "Protein shakes or bars"
+#             ],
+#             "Cutting": [
+#                 "Lean protein sources (chicken breast, turkey, fish)",
+#                 "Non-starchy vegetables (broccoli, spinach, kale)",
+#                 "Low-calorie fruits (berries, grapefruit)",
+#                 "Complex carbohydrates in moderation (sweet potatoes, quinoa)",
+#                 "Healthy fats in moderation (avocado, almonds)",
+#                 "Water and herbal tea (to stay hydrated)",
+#                 "Lean protein shakes or bars (as snacks)"
+#             ]
+#         }
+
+#         selected_recommendations = food_recommendations["Bulking" if is_bulking else "Cutting"]
+
+#         await interaction.response.edit_message(content=f"Here are some recommended foods for {'bulking' if is_bulking else 'cutting'}:\n\n" + "\n".join(selected_recommendations))
+
+# # Workout plans/routines
+# @bot.slash_command(name="Routines", description="List of workout routines to follow")
+# async def workout(interaction: nextcord.Interaction):
+#     # Create the initial view with options for workout plans
+#     workout_options_view = WorkoutOptionsView()
+
+#     await interaction.send("Please choose a workout plan:", view=workout_options_view)
+#     await workout_options_view.wait()
+
+# class WorkoutOptionsView(nextcord.ui.View):
+#     def __init__(self):
+#         super().__init__()
+
+#     @nextcord.ui.button(label="Beginners", style=nextcord.ButtonStyle.primary, custom_id="beginners")
+#     async def beginners(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+#         self.clear_items()  # Clear the existing buttons
+#         await self.show_workout_plan(interaction, plan="Beginners")
+
+#     @nextcord.ui.button(label="Push-Pull-Leg Split", style=nextcord.ButtonStyle.primary, custom_id="push_pull_leg_split")
+#     async def push_pull_leg_split(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+#         self.clear_items()  # Clear the existing buttons
+#         await self.show_workout_plan(interaction, plan="Push-Pull-Leg Split")
+
+#     async def show_workout_plan(self, interaction: nextcord.Interaction, plan: str):
+#         workout_plans = {
+#             "Beginners": {
+#                 "Monday - Arms and Shoulders": [
+#                     "Bicep curls",
+#                     "Shoulder press",
+#                     "Tricep dips",
+#                     "Lateral raises"
+#                 ],
+#                 "Wednesday - Legs and Abdominals": [],
+#                 "Friday - Chest and Back": []
+#             },
+#             "Push-Pull-Leg Split": {
+#                 "Monday - Push": [
+#                     "Bench Press",
+#                     "Seated Dumbbell Shoulder Press",
+#                     "Incline Dumbbell Press",
+#                     "Side Lateral Raises",
+#                     "Triceps Pressdowns",
+#                     "Overhead Triceps Extension"
+#                 ],
+#                 "Wednesday - Pull": [],
+#                 "Friday - Leg": []
+#             }
+#         }
+
+#         selected_workout_plan = workout_plans.get(plan, {})
+
+#         if selected_workout_plan:
+#             workout_plan_text = "\n".join([f"{day}\n" + "\n".join(exercises) for day, exercises in selected_workout_plan.items()])
+#             await interaction.response.edit_message(content=f"Here is the {plan} workout plan:\n\n{workout_plan_text}")
+#         else:
+#             await interaction.response.edit_message(content=f"No workout plan found for {plan}")
+
 
 # BMR command + buttons
 class bmr(nextcord.ui.View):
@@ -268,6 +469,7 @@ class bmr(nextcord.ui.View):
     async def cut(self, button: nextcord.ui.Button, interaction: Interaction):
         self.value = 'Cut (Calories)'
         self.stop()
+
 
 # List of exercises to do for certain muscle groups based on home or gym exercises
 
