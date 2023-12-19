@@ -177,36 +177,52 @@ async def update_info(ctx):
             return
             
     elif view.value == 'age':
-        view = update()
         await ctx.send("Please enter your age")
-        await view.wait()
-
-        if view.value == 'changed':
-            await ctx.send("Your age has been changed to 69")
+        try:
+            # reply gets the entire object of the message
+            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
+            # use reply.content to get the content of the message
+            await update(ctx, msg.content, 3)  # Change the column number to match the age column
+            await ctx.send(f"Your age has been changed to {msg.content}")
+        except asyncio.TimeoutError:
+            await ctx.send("Timed out!")
+            return
     
     elif view.value == 'height':
-        view = update()
         await ctx.send("Please enter your height")
-        await view.wait()
-
-        if view.value == 'changed':
-            await ctx.send("Your height has been changed to 420")
+        try:
+            # reply gets the entire object of the message
+            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
+            # use reply.content to get the content of the message
+            await update(ctx, msg.content, 4)  # Change the column number to match the height column
+            await ctx.send(f"Your height has been changed to {msg.content}")
+        except asyncio.TimeoutError:
+            await ctx.send("Timed out!")
+            return
     
     elif view.value == 'weight':
-        view = update()
         await ctx.send("Please enter your weight")
-        await view.wait()
-
-        if view.value == 'changed':
-            await ctx.send("Your weight has been changed to 666")
+        try:
+            # reply gets the entire object of the message
+            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
+            # use reply.content to get the content of the message
+            await update(ctx, msg.content, 5)  # Change the column number to match the weight column
+            await ctx.send(f"Your weight has been changed to {msg.content}")
+        except asyncio.TimeoutError:
+            await ctx.send("Timed out!")
+            return
     
     elif view.value == 'activity':
-        view = update()
         await ctx.send("Please enter your activity level")
-        await view.wait()
-
-        if view.value == 'changed':
-            await ctx.send("Your activity level has been changed to 420")
+        try:
+            # reply gets the entire object of the message
+            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
+            # use reply.content to get the content of the message
+            await update(ctx, msg.content, 6)  # Change the column number to match the activity level column
+            await ctx.send(f"Your activity level has been changed to {msg.content}")
+        except asyncio.TimeoutError:
+            await ctx.send("Timed out!")
+            return
 
 # motivation/encouragement
 @bot.slash_command(name="quotes", description="Quotes for motivation and encouragement")
