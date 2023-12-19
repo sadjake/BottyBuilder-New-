@@ -113,7 +113,7 @@ async def update(ctx, message:str, column:int):
 
     # Read data from the CSV file and update the user's info
     rows = []
-    with open("info.csv", "r+", encoding="UTF-8") as file:
+    with open("info.csv", "r+", encoding="utf-8") as file:
         userdata = csv.reader(file)
         rows = list(userdata)
 
