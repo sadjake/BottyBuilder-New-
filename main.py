@@ -175,61 +175,73 @@ async def update_info(ctx):
         except asyncio.TimeoutError:
             await ctx.send("Timed out!")
             return
-            
+        
     elif view.value == 'age':
-        await ctx.send("Please enter your age")
-        try:
-            # reply gets the entire object of the message
-            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author == ctx.author)
-            age_value = msg.content.strip()
-            if age_value:
-                await update(ctx, age_value, 3)
-                await ctx.send(f"Your age has been changed to {name_value}")
-            else:
-                await ctx.send("Age cannot be empty. Please try again.")
-        except asyncio.TimeoutError:
-            await ctx.send("Timed out!")
-            return
-    
+        while True:
+            await ctx.send("Please enter your age (in years)")
+            try:
+                # reply gets the entire object of the message
+                msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
+                age_value = msg.content.strip()
+
+                if age_value.isdigit():
+                    age_value = int(age_value)
+                    await update(ctx, age_value, 1)
+                    await ctx.send(f"Your age has been changed to {age_value}.")
+                    break  # Exit the loop if a valid integer is provided
+                else:
+                    await ctx.send("Invalid input. Please enter a valid number value.")
+            except asyncio.TimeoutError:
+                await ctx.send("Timed out!")
+                return
+
     elif view.value == 'height':
-        await ctx.send("Please enter your height")
-        try:
-            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
-            # Check if the content is non-empty before trying to convert to float
-            if msg.content.strip():
-                height_value = float(msg.content)
-                await update(ctx, height_value, 4)  # Change the column number to match the height column
-                await ctx.send(f"Your height has been changed to {height_value}")
-            else:
-                await ctx.send("Height value cannot be empty. Please try again.")
-        except asyncio.TimeoutError:
-            await ctx.send("Timed out!")
-            return
+        while True:
+            await ctx.send("Please enter your height (in cm)")
+            try:
+                # reply gets the entire object of the message
+                msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
+                height_value = msg.content.strip()
+
+                if height_value.isdigit():
+                    height_value = float(height_value)
+                    await update(ctx, height_value, 1)
+                    await ctx.send(f"Your height has been changed to {height_value}cm.")
+                    break  # Exit the loop if a valid integer is provided
+                else:
+                    await ctx.send("Invalid input. Please enter a valid number value.")
+            except asyncio.TimeoutError:
+                await ctx.send("Timed out!")
+                return
     
     elif view.value == 'weight':
-        await ctx.send("Please enter your weight")
-        try:
-            msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
-            # Check if the content is non-empty before trying to convert to float
-            if msg.content.strip():
-                weight_value = float(msg.content)
-                await update(ctx, weight_value, 5)  # Change the column number to match the weight column
-                await ctx.send(f"Your weight has been changed to {weight_value}")
-            else:
-                await ctx.send("Weight value cannot be empty. Please try again.")
-        except asyncio.TimeoutError:
-            await ctx.send("Timed out!")
-            return
+        while True:
+            await ctx.send("Please enter your weight (in kg)")
+            try:
+                # reply gets the entire object of the message
+                msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
+                weight_value = msg.content.strip()
+
+                if weight_value.isdigit():
+                    weight_value = float(weight_value)
+                    await update(ctx, weight_value, 1)
+                    await ctx.send(f"Your weight has been changed to {weight_value}kg.")
+                    break  # Exit the loop if a valid integer is provided
+                else:
+                    await ctx.send("Invalid input. Please enter a valid number value.")
+            except asyncio.TimeoutError:
+                await ctx.send("Timed out!")
+                return
     
     elif view.value == 'activity':
-        await ctx.send("Please enter your activity level")
+        # await ctx.send("Please enter your activity level")
         try:
             msg = await bot.wait_for("message", timeout=60, check=lambda message: message.author != bot.user)
             # Check if the content is non-empty before trying to convert to float
             if msg.content.strip():
                 activity_value = float(msg.content)
                 await update(ctx, activity_value, 6)  # Change the column number to match the activity column
-                await ctx.send(f"Your activity level has been changed to {activity_value}")
+                await ctx.send(f"Your activity level has been changed to {activity_value}.")
             else:
                 await ctx.send("Activity level value cannot be empty. Please try again.")
         except asyncio.TimeoutError:
@@ -260,9 +272,7 @@ async def motivation(interaction: nextcord.Interaction):
 async def exercise_recommendations(interaction: nextcord.Interaction):
     # Create the initial view with options for gym and home exercises
     exercise_options_view = ExerciseOptionsView()
-
     await interaction.send("Please choose an exercise category:", view=exercise_options_view)
-    await exercise_options_view.wait()
 
 class ExerciseOptionsView(nextcord.ui.View):
     def __init__(self):
@@ -290,19 +300,10 @@ class ExerciseOptionsView(nextcord.ui.View):
             "Abdominals": ["Crunches", "Leg raises", "Planks"],
             "Legs": ["Squats", "Leg press", "Lunges"],
             "Shoulders": ["Overhead press", "Lateral raises", "Front raises"]
-        } if self.is_gym else {
-            "Chest": ["Push-ups", "Dumbbell chest press", "Floor flyes"],
-            "Back": ["Bodyweight rows", "Superman exercises", "Reverse snow angels"],
-            "Arms": ["Chair dips", "Bicep curls with household items", "Tricep kickbacks with a bag"],
-            "Abdominals": ["Sit-ups", "Russian twists", "Planks"],
-            "Legs": ["Bodyweight squats", "Lunges", "Step-ups on a sturdy chair"],
-            "Shoulders": ["Pike push-ups", "Bottle lateral raises", "Shoulder shrugs with household items"]
         }
 
         content = "Please choose a muscle group:\n\n"
         for muscle_group, exercises in muscle_groups.items():
-            content += f"{muscle_group}: {', '.join(exercises)}\n"
-
             # Use the muscle group name as a custom ID to identify the selected group later
             self.add_item(nextcord.ui.Button(label=muscle_group, style=nextcord.ButtonStyle.primary, custom_id=f"exercise_{muscle_group}"))
 
@@ -310,33 +311,35 @@ class ExerciseOptionsView(nextcord.ui.View):
 
 @bot.event
 async def on_button_click(interaction: nextcord.Interaction):
-    if interaction.custom_id.startswith("exercise_"):
-        muscle_group = interaction.custom_id[len("exercise_"):]
+    print("Button clicked!")
+    try:
+        print(interaction.custom_id)
+        if interaction.custom_id.startswith("exercise_"):
+            muscle_group = interaction.custom_id[len("exercise_"):]
 
-        # Retrieve the exercises based on the selected muscle group and exercise category
-        is_gym = interaction.view.is_gym
-        exercises = {
-            "Chest": ["Bench press", "Dumbbell flyes", "Cable crossovers"],
-            "Back": ["Lat pulldowns", "Barbell rows", "Deadlifts"],
-            "Arms": ["Bicep curls", "Tricep pushdowns", "Hammer curls"],
-            "Abdominals": ["Crunches", "Leg raises", "Planks"],
-            "Legs": ["Squats", "Leg press", "Lunges"],
-            "Shoulders": ["Overhead press", "Lateral raises", "Front raises"]
-        } if is_gym else {
-            "Chest": ["Push-ups", "Dumbbell chest press", "Floor flyes"],
-            "Back": ["Bodyweight rows", "Superman exercises", "Reverse snow angels"],
-            "Arms": ["Chair dips", "Bicep curls with household items", "Tricep kickbacks with a bag"],
-            "Abdominals": ["Sit-ups", "Russian twists", "Planks"],
-            "Legs": ["Bodyweight squats", "Lunges", "Step-ups on a sturdy chair"],
-            "Shoulders": ["Pike push-ups", "Bottle lateral raises", "Shoulder shrugs with household items"]
-        }
+            # Retrieve the exercises based on the selected muscle group and exercise category
+            is_gym = interaction.view.is_gym
+            exercises = {
+                "Chest": ["Bench press", "Dumbbell flyes", "Cable crossovers"],
+                "Back": ["Lat pulldowns", "Barbell rows", "Deadlifts"],
+                "Arms": ["Bicep curls", "Tricep pushdowns", "Hammer curls"],
+                "Abdominals": ["Crunches", "Leg raises", "Planks"],
+                "Legs": ["Squats", "Leg press", "Lunges"],
+                "Shoulders": ["Overhead press", "Lateral raises", "Front raises"]
+            }
 
-        selected_exercises = exercises.get(muscle_group, [])
+            selected_exercises = exercises.get(muscle_group, [])
 
-        if selected_exercises:
-            await interaction.edit_original_message(content=f"Exercises for {muscle_group}:\n\n{', '.join(selected_exercises)}")
-        else:
-            await interaction.edit_original_message(content=f"No exercises found for {muscle_group}")
+            if selected_exercises:
+                # Build the message dynamically based on the selected muscle group
+                message_content = f"Exercises for {muscle_group}:\n\n{', '.join(selected_exercises)}"
+                await interaction.edit_original_message(content=message_content)
+            else:
+                await interaction.edit_original_message(content=f"No exercises found for {muscle_group}")
+
+    except nextcord.errors.NotFound:
+        # Handle the case where the interaction is no longer valid
+        print("Interaction not found. Ignoring the button click.")
 
 # # List of recommended foods to eat during a bulk or cut
 # @bot.slash_command(name="Food", description="List of recommended foods for bulking or cutting")
