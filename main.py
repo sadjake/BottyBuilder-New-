@@ -313,8 +313,8 @@ class ExerciseOptionsView(nextcord.ui.View):
 async def on_button_click(interaction: nextcord.Interaction):
     print("Button clicked!")
     try:
-        print(interaction.custom_id)
-        if interaction.custom_id.startswith("exercise_"):
+        if interaction.custom_id.startswith("exercise_") and interaction.view and interaction.view.is_valid():
+            print("Exercise button clicked!")
             muscle_group = interaction.custom_id[len("exercise_"):]
 
             # Retrieve the exercises based on the selected muscle group and exercise category
@@ -340,6 +340,7 @@ async def on_button_click(interaction: nextcord.Interaction):
     except nextcord.errors.NotFound:
         # Handle the case where the interaction is no longer valid
         print("Interaction not found. Ignoring the button click.")
+        
 
 # # List of recommended foods to eat during a bulk or cut
 # @bot.slash_command(name="Food", description="List of recommended foods for bulking or cutting")
