@@ -1,7 +1,5 @@
 # BottyBuilder 2.0
 
-(Because the prototype bot Jake made had too many problems and needed fresh restart lol)
-
 Saves your name, age, height, weight, gender, and maintenance/daily calorie level into a csv file 
 
 Bot includes option to allow the user to update their information
